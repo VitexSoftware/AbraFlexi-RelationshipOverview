@@ -21,14 +21,21 @@ require_once dirname(__DIR__).'/vendor/autoload.php';
 $oPage         = new WebPage(_('Button installer'));
 $oPage->logger = new \Ease\Logger\ToMemory();
 
+if(empty(\Ease\WebPage::getRequestValue('myurl'))){
+    $_REQUEST['myurl'] = dirname(\Ease\Page::phpSelf());
+}
+
 $loginForm = new ConnectionForm('install.php');
 $loginForm->addInput(new Toggle('browser',
         isset($_REQUEST) && array_key_exists('browser', $_REQUEST), 'automatic',
         ['data-on' => _('FlexiBee WebView'), 'data-off' => _('System Browser')]),
     _('Open results in FlexiBee WebView or in System default browser'));
+
+$loginForm->addInput( new \Ease\Html\InputUrlTag('myurl'), _('My Url'), dirname(\Ease\Page::phpSelf()), sprintf( _('Same url as you can see in browser without %s'), basename( __FILE__ ) ) );
+
 $loginForm->fillUp($_REQUEST);
 
-$baseUrl = dirname(\Ease\Page::phpSelf()).'/index.php?authSessionId=${authSessionId}&companyUrl=${companyUrl}';
+$baseUrl = \Ease\WebPage::getRequestValue('myurl').'/index.php?authSessionId=${authSessionId}&companyUrl=${companyUrl}';
 
 if ($oPage->isPosted()) {
     $browser = isset($_REQUEST) && array_key_exists('browser', $_REQUEST) ? 'automatic'

@@ -23,7 +23,7 @@ class Mailer extends \Ease\HtmlMailer
 
         $this->htmlDocument = new \Ease\Html\HtmlTag(new \Ease\Html\SimpleHeadTag([
             new \Ease\Html\TitleTag($this->emailSubject),
-            '<style>'.Digestor::$purecss.
+            '<style>'.file_get_contents('css/bootstrap.min.css').
             Digestor::getCustomCss().
             Digestor::getWebPageInlineCSS().
             '</style>']));

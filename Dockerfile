@@ -29,7 +29,3 @@ ENV APACHE_LOG_DIR /var/log/apache2
 EXPOSE 80
 CMD ["/usr/sbin/apachectl","-DFOREGROUND"]
 
-#RUN sed -i '/listen =/c\listen = 9000' /etc/php/7.0/fpm/pool.d/www.conf
-#RUN echo "#!/bin/bash\n/etc/init.d/php7.0-fpm start && bash" >> /run.sh
-#RUN chmod a+x /run.sh
-#ENTRYPOINT ["/run.sh"]

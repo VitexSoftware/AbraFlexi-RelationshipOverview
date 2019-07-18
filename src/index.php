@@ -51,9 +51,6 @@ if (empty($kod)) {
         $digestor->addItem(new \Ease\Html\ATag('index.php?kod='.$addresser->getDataValue('kod'),
                 _('Change Options')));
 
-//        $oPage->addCss(Digestor::$css);
-        $oPage->addCss(Digestor::getCustomCss());
-        $oPage->addCss(Digestor::getWebPageInlineCSS());
         $oPage->setPageTitle($subject);
         $oPage->body = $digestor;
         $oPage->draw();
