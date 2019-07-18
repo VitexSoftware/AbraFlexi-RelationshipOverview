@@ -1,4 +1,4 @@
-![project logo](project-logo.png)
+![project logo](https://raw.githubusercontent.com/Vitexus/RelationshipOverview/master/project-logo.png)
 
 Přehled vztahu s klientem pro FlexiBee
 ======================================
@@ -11,7 +11,7 @@ Do Adresáře FlexiBee přidá tlačítko "Přehled vztahu" kterým se aplikace 
 Nejprve je třeba zvolit jaké moduly budou při generování vztahu použity a za
 jaký časový úsek se budou data zpracovávat.
 
-![settings](settings.png)
+![settings](https://raw.githubusercontent.com/Vitexus/RelationshipOverview/master/settings.png)
 
 Po odeslání tlačítkem "Vygeneruj report" je tento vygenerován a zobrazen. 
 Současně je tento i odeslán mailem na uvedenou adresu klienta.
@@ -23,6 +23,8 @@ V browseru je třeba ručně otevřít stránku [install.php](src/install.php)
 
 Do formuláře se vyplní přístupové údaje do FlexiBee. 
 Pokud jsou tyto správné, vytvoří se ve FlexiBee v evidenci adresáře spouštěcí tlačítko.
+
+(Pokud se nepovede autodetekce serveru a portu, zkopírujte prosím tuto hodnotu z adresního řádku do příslušného políčka)
 
 Testování
 ---------
