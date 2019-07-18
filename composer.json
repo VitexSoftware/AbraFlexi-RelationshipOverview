@@ -1,0 +1,23 @@
+{
+    "name": "vitexsoftware/relationship-overview",
+    "description": "Relationship with customer report generator for FlexiBee",
+    "type": "project",
+    "require": {
+        "vitexsoftware/ease-twbootstrap4-widgets-flexibee": "dev-master",
+        "vitexsoftware/ease-twbootstrap4-widgets": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cybervitexus",
+            "email": "info@vitexsoftware.cz"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "FlexiPeeHP\\Relationship\\": "src/Relationship/"
+        }
+    }
+
+}

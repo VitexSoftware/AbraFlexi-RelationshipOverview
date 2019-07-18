@@ -1,0 +1,4 @@
+/vendor/
+/nbproject/private/
+/composer.lock
+/debian/conf/ssmtp.conf
