@@ -21,7 +21,7 @@ COPY composer.json   /var/www
 COPY debian/conf/mail.ini   /etc/php/7.0/conf.d/mail.ini
 COPY debian/conf/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
-RUN composer install --no-dev --no-plugins --no-scripts  -d /var/www/
+RUN composer install --no-dev --no-plugins --no-scripts --classmap-authoritative  -d /var/www/
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data

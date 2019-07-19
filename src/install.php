@@ -26,6 +26,7 @@ if(empty(\Ease\WebPage::getRequestValue('myurl'))){
 }
 
 $loginForm = new ConnectionForm('install.php');
+
 $loginForm->addInput(new Toggle('browser',
         isset($_REQUEST) && array_key_exists('browser', $_REQUEST), 'automatic',
         ['data-on' => _('FlexiBee WebView'), 'data-off' => _('System Browser')]),
@@ -43,7 +44,9 @@ if ($oPage->isPosted()) {
 
     $buttoner = new \FlexiPeeHP\FlexiBeeRW(null,
         array_merge($_REQUEST, ['evidence' => 'custom-button']));
-
+    
+    $buttoner->logBanner(constant('EASE_APPNAME'));
+    
     $buttoner->insertToFlexiBee(['id' => 'code:RELATIONSHIP', 'url' => $baseUrl.'&kod=${object.kod}',
         'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
         'location' => 'list', 'evidence' => 'adresar', 'browser' => $browser]);
@@ -61,7 +64,7 @@ if ($oPage->isPosted()) {
 
 $setupRow = new Row();
 $setupRow->addColumn(6, $loginForm);
-$setupRow->addColumn(6, $oPage->getStatusMessagesAsHtml());
+$setupRow->addColumn(6, [ Digestor::$logo , $oPage->getStatusMessagesAsHtml() ]);
 
 $oPage->addItem(new Container($setupRow));
 

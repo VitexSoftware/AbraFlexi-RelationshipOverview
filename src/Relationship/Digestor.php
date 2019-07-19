@@ -102,7 +102,7 @@ class Digestor extends \Ease\Html\DivTag
                 'height' => '50', 'title' => _('Company logo')]));
         $this->addItem(new \Ease\Html\H1Tag($subject));
         $prober  = new \FlexiPeeHP\Company();
-//        $prober->logBanner(' FlexiBee Relationship Overview '.self::getAppVersion().' '.$_SERVER['SCRIPT_FILENAME']);
+        $prober->logBanner(' FlexiBee Relationship Overview '.self::getAppVersion().' '.$_SERVER['SCRIPT_FILENAME']);
         $infoRaw = $prober->getFlexiData();
         if (count($infoRaw) && !array_key_exists('success', $infoRaw)) {
             $info      = self::reindexArrayBy($infoRaw, 'dbNazev');
