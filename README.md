@@ -30,3 +30,10 @@ Testování
 ---------
 
 Pokud není stránka volána s parametry $authSessionId && $companyUrl pokusí se načíst konfigurák ../testing/client.json
+
+Nasazení
+--------
+
+```
+docker run -d -p ${OUTPORT}:${INPORT} --name ${CONTNAME} vitexsoftware/flexibee-relationship-overview
+```

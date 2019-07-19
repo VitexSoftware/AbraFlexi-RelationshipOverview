@@ -2,6 +2,7 @@
     "name": "vitexsoftware/relationship-overview",
     "description": "Relationship with customer report generator for FlexiBee",
     "type": "project",
+    "version": "0.1a",
     "require": {
         "vitexsoftware/ease-twbootstrap4-widgets-flexibee": "dev-master",
         "vitexsoftware/ease-twbootstrap4-widgets": "dev-master"

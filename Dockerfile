@@ -16,7 +16,7 @@ RUN rm -f /var/www/html/index.html ; mkdir /var/www/input; mkdir /var/www/done; 
 COPY src/ /var/www/html/
 RUN ln -s /var/www/html/ /var/www/src
 COPY i18n/ /var/www/i18n
-RUN touch /var/www/registry.json ; chown www-data:www-data /var/www/registry.json 
+RUN sed -i '/#ServerName/s/.*/UseCanonicalName on/'  /etc/apache2/sites-enabled/000-default.conf
 COPY composer.json   /var/www
 COPY debian/conf/mail.ini   /etc/php/7.0/conf.d/mail.ini
 COPY debian/conf/ssmtp.conf /etc/ssmtp/ssmtp.conf
@@ -28,4 +28,3 @@ ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 EXPOSE 80
 CMD ["/usr/sbin/apachectl","-DFOREGROUND"]
-
