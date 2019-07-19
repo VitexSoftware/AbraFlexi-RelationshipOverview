@@ -1,6 +1,6 @@
 <?php
 /**
- * Instalce do FlexiBee
+ * FlexiBee Button installer page
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  * @copyright (c) 2019, Vitex Software
@@ -42,9 +42,12 @@ if (array_key_exists('connection', $_SESSION)) {
         $shared = \Ease\Shared::instanced();
         $shared->loadConfig($localCfg, true);
     } else {
-
-        $oPage->addItem(new \Ease\TWB4\LinkButton('JavaScript:self.close()',
-                _('Session Expired'), 'danger'));
+        if (\Ease\WebPage::getRequestValue('kod')) {
+            $oPage->addItem(new \Ease\TWB4\LinkButton('JavaScript:self.close()',
+                    _('Session Expired'), 'danger'));
+        } else {
+            $oPage->redirect('install.php');
+        }
         echo $oPage->draw();
         exit();
     }
