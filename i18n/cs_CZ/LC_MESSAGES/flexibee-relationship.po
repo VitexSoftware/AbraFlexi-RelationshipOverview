@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2019-07-19 00:39+0200\n"
-"PO-Revision-Date: 2019-07-19 00:40+0200\n"
+"POT-Creation-Date: 2019-07-19 20:42+0200\n"
+"PO-Revision-Date: 2019-07-19 20:42+0200\n"
 "Last-Translator: Vítězslav Dvořák <info@vitexsoftware.cz>\n"
 "Language-Team: \n"
 "Language: cs_CZ\n"
@@ -141,48 +141,39 @@ msgstr "Možnosti"
 
 #: ../src/init.php:47
 msgid "Session Expired"
-msgstr "Sezená vypršelo"
+msgstr "Sezení vypršelo"
+
+#: ../src/install.php:17 ../src/install.php:51
+msgid "Relationship Overview"
+msgstr "Přehled vztahu"
 
 #: ../src/install.php:21
 msgid "Button installer"
 msgstr "Instalátor tlačítka"
 
-#: ../src/install.php:31
+#: ../src/install.php:32
 msgid "FlexiBee WebView"
 msgstr "FlexiBee WebView"
 
-#: ../src/install.php:31
+#: ../src/install.php:32
 msgid "System Browser"
 msgstr "Systémový prohlížeč"
 
-#: ../src/install.php:32
+#: ../src/install.php:33
 msgid "Open results in FlexiBee WebView or in System default browser"
 msgstr ""
 "Otevřít výsledky ve webvém okýnku FlexiBee nebo ve výchozím systémovém "
 "prohlížeči"
 
-#: ../src/install.php:34
-msgid "My Url"
-msgstr "Mé URL"
-
-#: ../src/install.php:34
-#, php-format
-msgid "Same url as you can see in browser without %s"
-msgstr "Stejná adresa jako vidíte v adresním řádku, jen bez %s"
-
-#: ../src/install.php:48
-msgid "Relationship Overview"
-msgstr "Přehled vztahu"
-
-#: ../src/install.php:48
+#: ../src/install.php:51
 msgid "Relationship Overview generator/sender"
 msgstr "Generátor/Odesílač přehledu vztahu"
 
-#: ../src/install.php:51
+#: ../src/install.php:54
 msgid "Relationship Overview Button created"
 msgstr "Tlačítko přehledu vztahu bylo vytvořeno"
 
-#: ../src/install.php:57
+#: ../src/install.php:60
 msgid "My App URL"
 msgstr "Mje URL"
 
@@ -307,6 +298,12 @@ msgstr "Odchozí platby"
 #: ../src/modules/OutcomingPayments.php:163
 msgid "Payments we sent"
 msgstr "Odchozí platby"
+
+#~ msgid "My Url"
+#~ msgstr "Mé URL"
+
+#~ msgid "Same url as you can see in browser without %s"
+#~ msgstr "Stejná adresa jako vidíte v adresním řádku, jen bez %s"
 
 #~ msgid "missing login"
 #~ msgstr "chybějící login"

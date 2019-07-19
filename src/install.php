@@ -14,7 +14,7 @@ use \FlexiPeeHP\ui\TWB4\ConnectionForm;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
+define('EASE_APPNAME',_('Relationship Overview'));
 
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
@@ -32,7 +32,7 @@ $loginForm->addInput(new Toggle('browser',
         ['data-on' => _('FlexiBee WebView'), 'data-off' => _('System Browser')]),
     _('Open results in FlexiBee WebView or in System default browser'));
 
-$loginForm->addInput( new \Ease\Html\InputUrlTag('myurl'), _('My Url'), dirname(\Ease\Page::phpSelf()), sprintf( _('Same url as you can see in browser without %s'), basename( __FILE__ ) ) );
+//$loginForm->addInput( new \Ease\Html\InputUrlTag('myurl'), _('My Url'), dirname(\Ease\Page::phpSelf()), sprintf( _('Same url as you can see in browser without %s'), basename( __FILE__ ) ) );
 
 $loginForm->fillUp($_REQUEST);
 

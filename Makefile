@@ -1,5 +1,3 @@
-#all: fresh build
-
 composer:
 	composer update
 
@@ -11,5 +9,4 @@ dtest:
         
 drun: dimage
 	docker run  -dit --name RelationshipOverview -p 9999:80 vitexsoftware/flexibee-relationship-overview
-
 
