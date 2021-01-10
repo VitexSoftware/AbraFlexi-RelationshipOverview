@@ -1,30 +1,30 @@
 <?php
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-use \FlexiPeeHP\Relationship\DigestModule;
-use \FlexiPeeHP\Relationship\DigestModuleInterface;
+use \AbraFlexi\Relationship\DigestModule;
+use \AbraFlexi\Relationship\DigestModuleInterface;
 
 /**
  * Description of outcomingInvoices
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
-class OutcomingInvoices extends DigestModule implements DigestModuleInterface
-{
+class OutcomingInvoices extends DigestModule implements DigestModuleInterface {
+
     /**
      * Column used to filter by date
      * @var string 
      */
     public $timeColumn = 'datVyst';
 
-    public function dig()
-    {
-        $digger          = new FlexiPeeHP\FakturaVydana();
-        $outInvoicesData = $digger->getColumnsFromFlexibee([
+    public function dig() {
+        $digger = new AbraFlexi\FakturaVydana();
+        $outInvoicesData = $digger->getColumnsFromAbraFlexi([
             'kod', 'typDokl',
             'popis',
             'varSym',
@@ -33,10 +33,10 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
             'sumCelkemMen',
             'sumZalohy', 'sumZalohyMen', 'uhrazeno', 'storno', 'mena', 'juhSum',
             'juhSumMen'], $this->condition);
-        $exposed         = 0;
-        $invoicedRaw     = [];
-        $paid            = [];
-        $storno          = 0;
+        $exposed = 0;
+        $invoicedRaw = [];
+        $paid = [];
+        $storno = 0;
 
         $typDoklCounts = [];
         $typDoklTotals = [];
@@ -52,7 +52,6 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
                 _('Variable symbol'), _('Date'), _('Amount'), _('Proformed'), _('Settled'),
                 _('Currency')]);
 
-
             foreach ($outInvoicesData as $outInvoiceData) {
 
 
@@ -61,16 +60,16 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
                     $storno++;
                 }
                 $currency = self::getCurrency($outInvoiceData);
-                $typDokl  = $outInvoiceData['typDokl'];
+                $typDokl = $outInvoiceData['typDokl'];
 
                 if ($currency != 'CZK') {
-                    $amount    = floatval($outInvoiceData['sumCelkemMen']);
+                    $amount = floatval($outInvoiceData['sumCelkemMen']);
                     $proformed = floatval($outInvoiceData['sumZalohyMen']);
-                    $settled   = floatval($outInvoiceData['juhSumMen']);
+                    $settled = floatval($outInvoiceData['juhSumMen']);
                 } else {
-                    $amount    = floatval($outInvoiceData['sumCelkem']);
+                    $amount = floatval($outInvoiceData['sumCelkem']);
                     $proformed = floatval($outInvoiceData['sumZalohy']);
-                    $settled   = floatval($outInvoiceData['juhSum']);
+                    $settled = floatval($outInvoiceData['juhSum']);
                 }
 
 
@@ -84,10 +83,10 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
                 }
 
                 if (array_key_exists($typDokl, $typDoklCounts)) {
-                    $typDoklCounts[$typDokl] ++;
+                    $typDoklCounts[$typDokl]++;
                     $typDoklTotals[$typDokl][$currency] += $amount;
                 } else {
-                    $typDoklCounts[$typDokl]            = 1;
+                    $typDoklCounts[$typDokl] = 1;
                     $typDoklTotals[$typDokl][$currency] = $amount;
                 }
 
@@ -109,9 +108,9 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
                 unset($outInvoiceData['sumCelkemMen']);
                 $outInvoiceData['sumZalohy'] = $proformed;
                 unset($outInvoiceData['sumZalohyMen']);
-                $outInvoiceData['juhSum']    = $settled;
+                $outInvoiceData['juhSum'] = $settled;
                 unset($outInvoiceData['juhSumMen']);
-                $outInvoiceData['mena']      = $currency;
+                $outInvoiceData['mena'] = $currency;
 
                 $listingTable->addRowColumns($outInvoiceData);
             }
@@ -120,18 +119,17 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
             $this->addItem($listingTable);
 
             $this->addItem($this->totalsTable($typDoklTotals, $invoicedRaw,
-                    $typDoklCounts));
+                            $typDoklCounts));
         }
         return !empty($outInvoicesData);
     }
 
-    public function totalsTable($typDoklTotals, $invoicedRaw, $typDoklCounts)
-    {
+    public function totalsTable($typDoklTotals, $invoicedRaw, $typDoklCounts) {
         $tableHeader[] = _('Count');
         $tableHeader[] = _('Document type');
-        $currencies    = array_keys($invoicedRaw);
+        $currencies = array_keys($invoicedRaw);
         foreach ($currencies as $currencyCode) {
-            $tableHeader[] = _('Total').' '.\FlexiPeeHP\FlexiBeeRO::uncode($currencyCode);
+            $tableHeader[] = _('Total') . ' ' . \AbraFlexi\RO::uncode($currencyCode);
         }
 
         $outInvoicesTable = new \Ease\TWB4\Table();
@@ -139,21 +137,19 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
         $outInvoicesTable->addRowHeaderColumns($tableHeader);
 
         foreach ($typDoklTotals as $typDokl => $typDoklTotal) {
-            $tableRow   = [$typDoklCounts[$typDokl]];
-            $tableRow[] = \FlexiPeeHP\FlexiBeeRO::uncode($typDokl);
+            $tableRow = [$typDoklCounts[$typDokl]];
+            $tableRow[] = \AbraFlexi\RO::uncode($typDokl);
 
             foreach ($currencies as $currencyCode) {
                 $tableRow[] = array_key_exists($currencyCode,
-                        $typDoklTotals[$typDokl]) ? $typDoklTotals[$typDokl][$currencyCode]
-                        : '';
+                                $typDoklTotals[$typDokl]) ? $typDoklTotals[$typDokl][$currencyCode] : '';
             }
             $outInvoicesTable->addRowColumns($tableRow);
         }
         return $outInvoicesTable;
     }
 
-    public function heading()
-    {
+    public function heading() {
         return _('Outcoming Invoices');
     }
 
@@ -162,8 +158,8 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface
      * 
      * @return string
      */
-    public function description()
-    {
+    public function description() {
         return _('Invoices we issued');
     }
+
 }

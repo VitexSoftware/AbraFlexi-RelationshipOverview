@@ -1,20 +1,43 @@
 <?php
+
 /**
- * FlexiBee Digest Engine
+ * AbraFlexi Digest Engine
  *
  * @author     Vítězslav Dvořák <info@vitexsofware.cz>
  * @copyright  (G) 2018 Vitex Software
  */
 
-namespace FlexiPeeHP\Relationship;
+namespace AbraFlexi\Relationship;
+
+use AbraFlexi\Adresar;
+use AbraFlexi\Company;
+use AbraFlexi\ui\CompanyLogo;
+use DateInterval;
+use DatePeriod;
+use DateTime;
+use Ease\Functions;
+use Ease\Html\ATag;
+use Ease\Html\BodyTag;
+use Ease\Html\DivTag;
+use Ease\Html\H1Tag;
+use Ease\Html\HrTag;
+use Ease\Html\HtmlTag;
+use Ease\Html\ImgTag;
+use Ease\Html\NavTag;
+use Ease\Html\SimpleHeadTag;
+use Ease\Html\SmallTag;
+use Ease\Html\StrongTag;
+use Ease\Html\TitleTag;
+use Ease\Html\UlTag;
+use Ease\Shared;
 
 /**
  * Description of Digestor
  *
  * @author vitex
  */
-class Digestor extends \Ease\Html\DivTag
-{
+class Digestor extends DivTag {
+
     /**
      * Subject
      * @var string 
@@ -67,7 +90,7 @@ class Digestor extends \Ease\Html\DivTag
 
     /**
      * Top menu 
-     * @var \Ease\Html\DivTag 
+     * @var DivTag 
      */
     public $topMenu;
 
@@ -82,59 +105,56 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @param string $subject
      */
-    public function __construct($subject, \FlexiPeeHP\Adresar $customer)
-    {
+    public function __construct($subject, Adresar $customer) {
         parent::__construct();
-        $this->defaultModuleConditions['firma']  = $customer->getRecordCode();
+        $this->defaultModuleConditions['firma'] = $customer->getRecordCode();
         $this->defaultModuleConditions['storno'] = false;
-        $this->subject                           = $subject;
+        $this->subject = $subject;
         $this->addHeading($subject);
-        $this->shared                            = \Ease\Shared::instanced();
+        $this->shared = Shared::instanced();
     }
 
     /**
      * Digest page Heading
      */
-    public function addHeading($subject)
-    {
-        $this->addItem(new \Ease\Html\ATag('', '', ['name' => 'index']));
-        $this->addItem(new \FlexiPeeHP\ui\CompanyLogo(['align' => 'right', 'id' => 'companylogo',
-                'height' => '50', 'title' => _('Company logo')]));
-        $this->addItem(new \Ease\Html\H1Tag($subject));
-        $prober  = new \FlexiPeeHP\Company();
-        $prober->logBanner(' FlexiBee Relationship Overview '.self::getAppVersion().' '.$_SERVER['SCRIPT_FILENAME']);
+    public function addHeading($subject) {
+        $this->addItem(new ATag('', '', ['name' => 'index']));
+        $this->addItem(new CompanyLogo(['align' => 'right', 'id' => 'companylogo',
+                    'height' => '50', 'title' => _('Company logo')]));
+        $this->addItem(new H1Tag($subject));
+        $prober = new Company();
+        $prober->logBanner(' AbraFlexi Relationship Overview ' . self::getAppVersion() . ' ' . $_SERVER['SCRIPT_FILENAME']);
         $infoRaw = $prober->getFlexiData();
         if (count($infoRaw) && !array_key_exists('success', $infoRaw)) {
-            $info      = self::reindexArrayBy($infoRaw, 'dbNazev');
+            $info = Functions::reindexArrayBy($infoRaw, 'dbNazev');
             $myCompany = $prober->getCompany();
             if (array_key_exists($myCompany, $info)) {
-                $return = new \Ease\Html\ATag($prober->url.'/c/'.$myCompany,
-                    $info[$myCompany]['nazev']);
+                $return = new ATag($prober->url . '/c/' . $myCompany,
+                        $info[$myCompany]['nazev']);
             } else {
-                $return = new \Ease\Html\ATag($prober->getApiURL(),
-                    _('Connection Problem'));
+                $return = new ATag($prober->getApiURL(),
+                        _('Connection Problem'));
             }
         }
 
-        $this->addItem(new \Ease\Html\StrongTag($return,
-                ['class' => 'companylink']));
-        $this->topMenu = $this->addItem(new \Ease\Html\NavTag(null,
-                ['class' => 'nav']));
+        $this->addItem(new StrongTag($return,
+                        ['class' => 'companylink']));
+        $this->topMenu = $this->addItem(new NavTag(null,
+                        ['class' => 'nav']));
     }
 
     /**
      * Include all classes in modules directory
      * 
-     * @param \DateInterval $interval
+     * @param DateInterval $interval
      */
-    public function dig($interval, $moduleDir)
-    {
+    public function dig($interval, $moduleDir) {
         $this->processModules(self::getModules($moduleDir), $interval);
 
         $this->addIndex();
         $this->addFoot();
 
-        $shared  = \Ease\Shared::instanced();
+        $shared = Shared::instanced();
         $emailto = $shared->getConfigValue('EASE_MAILTO');
         if ($emailto) {
             $this->sendByMail($emailto);
@@ -149,23 +169,22 @@ class Digestor extends \Ease\Html\DivTag
      * Process All modules in specified Dir
      * 
      * @param array $modules [classname=>filepath]
-     * @param \DateTime|\DatePeriod $interval
+     * @param DateTime|DatePeriod $interval
      */
-    public function processModules($modules, $interval)
-    {
+    public function processModules($modules, $interval) {
         foreach ($modules as $class => $classFile) {
             include_once $classFile;
             $module = new $class($interval, $this->defaultModuleConditions);
             $saveto = $this->shared->getConfigValue('SAVETO');
             if ($module->process()) {
-                $this->addItem(new \Ease\Html\HrTag());
+                $this->addItem(new HrTag());
                 $this->addToIndex($this->addItem($module));
                 if ($saveto) {
                     $module->saveToHtml($saveto);
                 }
             } else {
                 $this->addStatusMessage(sprintf(_('Module %s do not found results'),
-                        $class));
+                                $class));
                 if ($saveto) {
                     $module->fileCleanUP($saveto);
                 }
@@ -178,8 +197,7 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @param string $moduleDir path
      */
-    public static function getModules($moduleDir)
-    {
+    public static function getModules($moduleDir) {
         $modules = [];
         if (is_array($moduleDir)) {
             foreach ($moduleDir as $module) {
@@ -187,21 +205,21 @@ class Digestor extends \Ease\Html\DivTag
             }
         } else {
             if (is_dir($moduleDir)) {
-                $d     = dir($moduleDir);
+                $d = dir($moduleDir);
                 while (false !== ($entry = $d->read())) {
-                    if (is_file($moduleDir.'/'.$entry)) {
-                        $class           = pathinfo($entry, PATHINFO_FILENAME);
-                        $modules[$class] = realpath($moduleDir.'/'.$entry);
+                    if (is_file($moduleDir . '/' . $entry)) {
+                        $class = pathinfo($entry, PATHINFO_FILENAME);
+                        $modules[$class] = realpath($moduleDir . '/' . $entry);
                     }
                 }
                 $d->close();
             } else {
                 if (is_file($moduleDir)) {
-                    $class           = pathinfo($moduleDir, PATHINFO_FILENAME);
+                    $class = pathinfo($moduleDir, PATHINFO_FILENAME);
                     $modules[$class] = realpath($moduleDir);
                 } else {
-                    \Ease\Shared::instanced()->addStatusMessage(sprintf(_('Module dir %s is wrong'),
-                            $moduleDir), 'error');
+                    Shared::instanced()->addStatusMessage(sprintf(_('Module dir %s is wrong'),
+                                    $moduleDir), 'error');
                 }
             }
         }
@@ -213,34 +231,33 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @param DigestModule $element
      */
-    public function addToIndex($element)
-    {
+    public function addToIndex($element) {
         $this->index[get_class($element)] = $element->heading();
     }
 
     /**
      * Add Index to digest
      */
-    public function addIndex()
-    {
-        $this->addItem(new \Ease\Html\H1Tag(new \Ease\Html\ATag('', _('Index'),
-                    ['name' => 'index2'])));
-        $this->addItem(new \Ease\Html\HrTag());
+    public function addIndex() {
+        $this->addItem(new H1Tag(new ATag('', _('Index'),
+                                ['name' => 'index2'])));
+        $this->addItem(new HrTag());
 
-        $index = new \Ease\Html\UlTag(null, ['class' => 'nav']);
+        $index = new UlTag(null, ['class' => 'nav']);
 
         foreach ($this->index as $class => $heading) {
-            $index->addItemSmart(new \Ease\Html\ATag('#'.$class, $heading,
-                    ['class' => 'nav-link']),
-                ['class' => 'nav-item']);
+            $index->addItemSmart(new ATag('#' . $class, $heading,
+                            ['class' => 'nav-link']),
+                    ['class' => 'nav-item']);
 
-            $this->topMenu->addItem(new \Ease\Html\ATag('#'.$class, $heading,
-                    ['class' => 'nav-link']));
+            $this->topMenu->addItem(new ATag('#' . $class, $heading,
+                            ['class' => 'nav-link']));
         }
 
-        $this->addItem(new \Ease\Html\UlTag($index,
-                ['class' => 'nav']));
+        $this->addItem(new UlTag($index,
+                        ['class' => 'nav']));
     }
+
 //    /**
 //     * Include next element into current page (if not closed).
 //     *
@@ -259,8 +276,7 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @param string $mailto
      */
-    public function sendByMail($mailto)
-    {
+    public function sendByMail($mailto) {
         $postman = new Mailer($mailto, $this->subject);
         $postman->addItem($this);
         $postman->send();
@@ -271,20 +287,18 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @param string $saveTo directory
      */
-    public function saveToHtml($saveTo)
-    {
-        $filename = $saveTo.pathinfo($_SERVER['SCRIPT_FILENAME'],
-                PATHINFO_FILENAME).'.html';
-        $webPage  = new \Ease\Html\HtmlTag(new \Ease\Html\SimpleHeadTag([
-                new \Ease\Html\TitleTag($this->subject),
-                '<style>'.Digestor::$mailcss.Digestor::getCustomCss().Digestor::getWebPageInlineCSS().'</style>']));
-        $webPage->addItem(new \Ease\Html\BodyTag($this));
+    public function saveToHtml($saveTo) {
+        $filename = $saveTo . pathinfo($_SERVER['SCRIPT_FILENAME'],
+                        PATHINFO_FILENAME) . '.html';
+        $webPage = new HtmlTag(new SimpleHeadTag([
+                    new TitleTag($this->subject),
+                    '<style>' . Digestor::$mailcss . Digestor::getCustomCss() . Digestor::getWebPageInlineCSS() . '</style>']));
+        $webPage->addItem(new BodyTag($this));
         $this->addStatusMessage(sprintf(_('Saved to %s'), $filename),
-            file_put_contents($filename, $webPage->getRendered()) ? 'success' : 'error');
+                file_put_contents($filename, $webPage->getRendered()) ? 'success' : 'error');
     }
 
-    static public function getWebPageInlineCSS()
-    {
+    static public function getWebPageInlineCSS() {
 //        $easeShared = \Ease\Shared::webPage();
 //        if (isset($easeShared->cascadeStyles) && count($easeShared->cascadeStyles)) {
 //            $cascadeStyles = [];
@@ -303,8 +317,7 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @return string
      */
-    public static function getCustomCss()
-    {
+    public static function getCustomCss() {
 
 //        $theme   = \Ease\Shared::instanced()->getConfigValue('THEME');
 //        $cssfile = constant('STYLE_DIR').'/'.$theme.'.css';
@@ -316,27 +329,25 @@ class Digestor extends \Ease\Html\DivTag
      * 
      * @return string
      */
-    static public function getAppVersion()
-    {
+    static public function getAppVersion() {
         $composerInfo = json_decode(file_get_contents('../composer.json'), true);
-        return array_key_exists('version', $composerInfo) ? $composerInfo['version']
-                : 'dev-master';
+        return array_key_exists('version', $composerInfo) ? $composerInfo['version'] : 'dev-master';
     }
 
     /**
      * Page Bottom
      */
-    public function addFoot()
-    {
-        $this->addItem(new \Ease\Html\HrTag());
-        $this->addItem(new \Ease\Html\ImgTag('data:image/svg+xml;base64,'.base64_encode(self::$logo),
-                'Logo', ['align' => 'right', 'width' => '50']));
-        $this->addItem(new \Ease\Html\SmallTag(new \Ease\Html\DivTag([_('Generated by'),
-                    '&nbsp;', new \Ease\Html\ATag('https://github.com/VitexSoftware/FlexiBee-RelationshipOverview',
-                        _('FlexiBee Relationship Overview').' '._('version').' '.self::getAppVersion())])));
+    public function addFoot() {
+        $this->addItem(new HrTag());
+        $this->addItem(new ImgTag('data:image/svg+xml;base64,' . base64_encode(self::$logo),
+                        'Logo', ['align' => 'right', 'width' => '50']));
+        $this->addItem(new SmallTag(new DivTag([_('Generated by'),
+                            '&nbsp;', new ATag('https://github.com/VitexSoftware/AbraFlexi-RelationshipOverview',
+                                    _('AbraFlexi Relationship Overview') . ' ' . _('version') . ' ' . self::getAppVersion())])));
 
-        $this->addItem(new \Ease\Html\SmallTag(new \Ease\Html\DivTag([_('(G) 2019'),
-                    '&nbsp;', new \Ease\Html\ATag('https://www.vitexsoftware.cz/',
-                        'Vitex Software')])));
+        $this->addItem(new SmallTag(new DivTag([_('(G) 2019-2021'),
+                            '&nbsp;', new ATag('https://www.vitexsoftware.cz/',
+                                    'Vitex Software')])));
     }
+
 }

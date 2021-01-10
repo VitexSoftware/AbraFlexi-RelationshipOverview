@@ -1,32 +1,44 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+
+/**
+ * AbraFlexi Relationship
+ *
+ * @author Vítězslav Dvořák <info@vitexsoftware.cz>
+ * @copyright (c) 2019, Vitex Software
  */
 
-namespace FlexiPeeHP\Relationship\ui;
+namespace AbraFlexi\Relationship\ui;
 
-use \Ease\TWB4\LinkButton;
-use \Ease\TWB4\FormGroup;
-use \Ease\TWB4\SubmitButton;
-use \Ease\TWB4\Widgets\Toggle;
+use AbraFlexi\Adresar;
+use AbraFlexi\Relationship\Digestor;
+use DateTime;
+use Ease\Html\H2Tag;
+use Ease\Html\H3Tag;
+use Ease\Html\InputDateTag;
+use Ease\Html\InputEmailTag;
+use Ease\Html\InputHiddenTag;
+use Ease\TWB4\Container;
+use Ease\TWB4\Form;
+use Ease\TWB4\FormGroup;
+use Ease\TWB4\LinkButton;
+use Ease\TWB4\Row;
+use Ease\TWB4\SubmitButton;
+use Ease\TWB4\Widgets\Toggle;
+use Ease\WebPage;
 
 /**
  * Description of OptionsForm
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
-class OptionsForm extends \Ease\TWB4\Form
-{
+class OptionsForm extends Form {
 
-    public function __construct(\FlexiPeeHP\Adresar $customer,
-                                $tagProperties = array())
-    {
-        $from = \Ease\WebPage::getRequestValue('from');
-        $to   = \Ease\WebPage::getRequestValue('to');
+    public function __construct(Adresar $customer,
+            $tagProperties = array()) {
+        $from = WebPage::getRequestValue('from');
+        $to = WebPage::getRequestValue('to');
 
-        $start = new \DateTime();
+        $start = new DateTime();
         if (empty($from)) {
             $start->modify('-1 month');
             $from = $start->format('Y-m-d');
@@ -35,7 +47,7 @@ class OptionsForm extends \Ease\TWB4\Form
             $start->setDate($year, $month, $day);
         }
 
-        $end = new \DateTime();
+        $end = new DateTime();
         if (empty($to)) {
             $to = date('Y-m-d');
         } else {
@@ -43,34 +55,33 @@ class OptionsForm extends \Ease\TWB4\Form
             $end->setDate($year, $month, $day);
         }
 
-        parent::__construct('fromto', 'index.php', 'POST', null, $tagProperties);
+        parent::__construct( [ 'name'=>'fromto'], $tagProperties);
 
         $this->addTagClass('form-horizontal');
 
-        //new \Ease\Html\H1Tag(new \Ease\Html\ATag($myCompany->getApiURL(),$myCompanyName).' '._('FlexiBee digest'))
+        //new \Ease\Html\H1Tag(new \Ease\Html\ATag($myCompany->getApiURL(),$myCompanyName).' '._('AbraFlexi digest'))
 
-        $container = new \Ease\TWB4\Container();
+        $container = new Container();
 
-        $formColumns = new \Ease\TWB4\Row();
-        $modulesCol  = $formColumns->addColumn(6,
-            new \Ease\Html\H2Tag(_('Modules')));
+        $formColumns = new Row();
+        $modulesCol = $formColumns->addColumn(6,
+                new H2Tag(_('Modules')));
 
-        $candidates[_('Common modules')] = \FlexiPeeHP\Relationship\Digestor::getModules(constant('MODULE_PATH'));
+        $candidates[_('Common modules')] = Digestor::getModules(constant('MODULE_PATH'));
 
         foreach ($candidates as $heading => $modules) {
-            $modulesCol->addItem(new \Ease\Html\H3Tag($heading));
+            $modulesCol->addItem(new H3Tag($heading));
             asort($modules);
             foreach ($modules as $className => $classFile) {
                 include_once $classFile;
                 $module = new $className(null);
-                $modulesCol->addItem([new Toggle('modules['.$className.']',
-                        true, $classFile), '&nbsp;'.$module->heading().'<br>']);
+                $modulesCol->addItem([new Toggle('modules[' . $className . ']',
+                            true, $classFile), '&nbsp;' . $module->heading() . '<br>']);
             }
         }
 
         $optionsCol = $formColumns->addColumn(6,
-            new \Ease\Html\H2Tag(_('Options')));
-
+                new H2Tag(_('Options')));
 
         $this->addJavaScript('
     
@@ -103,32 +114,32 @@ $( "#lastyear" ).click(function() {
 ');
 
         $optionsCol->addItem(new LinkButton('#', _('Yesterday'), 'inverse',
-                ['id' => 'yesterday']));
+                        ['id' => 'yesterday']));
         $optionsCol->addItem(new LinkButton('#', _('Week'), 'inverse',
-                ['id' => 'lastweek']));
+                        ['id' => 'lastweek']));
         $optionsCol->addItem(new LinkButton('#', _('Month'), 'inverse',
-                ['id' => 'lastmonth']));
+                        ['id' => 'lastmonth']));
         $optionsCol->addItem(new LinkButton('#', _('Year'), 'inverse',
-                ['id' => 'lastyear']));
-
+                        ['id' => 'lastyear']));
 
         $optionsCol->addItem(new FormGroup(_('From'),
-                new \Ease\Html\InputDateTag('from', $from)));
+                        new InputDateTag('from', $from)));
 
         $optionsCol->addItem(new FormGroup(_('To'),
-                new \Ease\Html\InputDateTag('to', $to)));
+                        new InputDateTag('to', $to)));
 
         $optionsCol->addItem(new FormGroup(_('Send by mail to'),
-                new \Ease\Html\InputEmailTag('recipient',
-                    $customer->getNotificationEmailAddress())));
+                        new InputEmailTag('recipient',
+                                $customer->getNotificationEmailAddress())));
 
-        $this->addItem(new \Ease\Html\InputHiddenTag('kod', $customer->getDataValue('kod')));
+        $this->addItem(new InputHiddenTag('kod', $customer->getDataValue('kod')));
 
         $this->addItem($formColumns);
         $this->addItem(new SubmitButton(sprintf(_('Generate digest for %s '),
-                    $customer->getDataValue('kod').': '.$customer->getDataValue('nazev')),
-                'success btn-lg btn-block',
-                ['onClick' => "window.scrollTo(0, 0); $('#Preloader').css('visibility', 'visible');",
-                'style' => 'height: 90%']));
+                                $customer->getDataValue('kod') . ': ' . $customer->getDataValue('nazev')),
+                        'success btn-lg btn-block',
+                        ['onClick' => "window.scrollTo(0, 0); $('#Preloader').css('visibility', 'visible');",
+                    'style' => 'height: 90%']));
     }
+
 }

@@ -1,31 +1,31 @@
 <?php
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-use \FlexiPeeHP\Relationship\DigestModule;
-use \FlexiPeeHP\Relationship\DigestModuleInterface;
+use \AbraFlexi\Relationship\DigestModule;
+use \AbraFlexi\Relationship\DigestModuleInterface;
 
 /**
  * Description of incomingPayments
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
-class IncomingPayments extends DigestModule implements DigestModuleInterface
-{
+class IncomingPayments extends DigestModule implements DigestModuleInterface {
+
     /**
      * Column used to filter by date
      * @var string 
      */
     public $timeColumn = 'datVyst';
 
-    public function dig()
-    {
-        $digger                        = new FlexiPeeHP\Banka();
+    public function dig() {
+        $digger = new AbraFlexi\Banka();
         $this->condition['typPohybuK'] = 'typPohybu.prijem';
-        $outInvoicesData               = $digger->getColumnsFromFlexibee([
+        $outInvoicesData = $digger->getColumnsFromAbraFlexi([
             'kod',
             'banka',
             'popis',
@@ -35,13 +35,13 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
             'sumCelkemMen',
             'mena',
             'juhSumMen'], $this->condition);
-        $exposed                       = 0;
-        $invoicedRaw                   = [];
-        $paid                          = [];
-        $storno                        = 0;
+        $exposed = 0;
+        $invoicedRaw = [];
+        $paid = [];
+        $storno = 0;
 
         $bankaCounts = [];
-        $bankaTotals   = [];
+        $bankaTotals = [];
 
         if (empty($outInvoicesData)) {
             $this->addItem(_('none'));
@@ -53,13 +53,12 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
             $listingTable->addRowHeaderColumns([_('Code'), _('Bank'), _('Subject'),
                 _('Variable symbol'), _('Date'), _('Amount'), _('Currency')]);
 
-
             foreach ($outInvoicesData as $incomingPaymentData) {
 
 
                 $exposed++;
                 $currency = self::getCurrency($incomingPaymentData);
-                $banka    = $incomingPaymentData['banka'];
+                $banka = $incomingPaymentData['banka'];
 
                 if ($currency != 'CZK') {
                     $amount = floatval($incomingPaymentData['sumCelkemMen']);
@@ -76,10 +75,10 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
                 }
 
                 if (array_key_exists($banka, $bankaCounts)) {
-                    $bankaCounts[$banka] ++;
+                    $bankaCounts[$banka]++;
                     $bankaTotals[$banka][$currency] += $amount;
                 } else {
-                    $bankaCounts[$banka]          = 1;
+                    $bankaCounts[$banka] = 1;
                     $bankaTotals[$banka][$currency] = $amount;
                 }
 
@@ -99,7 +98,7 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
 
                 $incomingPaymentData['sumCelkem'] = $amount;
                 unset($incomingPaymentData['sumCelkemMen']);
-                $incomingPaymentData['mena']      = $currency;
+                $incomingPaymentData['mena'] = $currency;
 
                 $listingTable->addRowColumns($incomingPaymentData);
             }
@@ -108,7 +107,7 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
             $this->addItem($listingTable);
 
             $this->addItem($this->totalsTable($bankaTotals, $invoicedRaw,
-                    $bankaCounts));
+                            $bankaCounts));
         }
         return !empty($outInvoicesData);
     }
@@ -121,13 +120,12 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
      * 
      * @return \Ease\TWB4\Table
      */
-    public function totalsTable($bankaTotals, $incomeRaw, $bankaCounts)
-    {
+    public function totalsTable($bankaTotals, $incomeRaw, $bankaCounts) {
         $tableHeader[] = _('Count');
         $tableHeader[] = _('Bank');
-        $currencies    = array_keys($incomeRaw);
+        $currencies = array_keys($incomeRaw);
         foreach ($currencies as $currencyCode) {
-            $tableHeader[] = _('Total').' '.\FlexiPeeHP\FlexiBeeRO::uncode($currencyCode);
+            $tableHeader[] = _('Total') . ' ' . \AbraFlexi\RO::uncode($currencyCode);
         }
 
         $outInvoicesTable = new \Ease\TWB4\Table();
@@ -135,21 +133,19 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
         $outInvoicesTable->addRowHeaderColumns($tableHeader);
 
         foreach ($bankaTotals as $typDokl => $typDoklTotal) {
-            $tableRow   = [$bankaCounts[$typDokl]];
-            $tableRow[] = \FlexiPeeHP\FlexiBeeRO::uncode($typDokl);
+            $tableRow = [$bankaCounts[$typDokl]];
+            $tableRow[] = \AbraFlexi\RO::uncode($typDokl);
 
             foreach ($currencies as $currencyCode) {
                 $tableRow[] = array_key_exists($currencyCode,
-                        $bankaTotals[$typDokl]) ? $bankaTotals[$typDokl][$currencyCode]
-                        : '';
+                                $bankaTotals[$typDokl]) ? $bankaTotals[$typDokl][$currencyCode] : '';
             }
             $outInvoicesTable->addRowColumns($tableRow);
         }
         return $outInvoicesTable;
     }
 
-    public function heading()
-    {
+    public function heading() {
         return _('Incoming Payments');
     }
 
@@ -158,8 +154,8 @@ class IncomingPayments extends DigestModule implements DigestModuleInterface
      * 
      * @return string
      */
-    public function description()
-    {
+    public function description() {
         return _('Payments we recieved');
     }
+
 }

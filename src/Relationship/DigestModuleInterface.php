@@ -1,18 +1,19 @@
 <?php
+
 /**
- * FlexiBee Digest 
+ * AbraFlexi Digest 
  *
  * @author     Vítězslav Dvořák <info@vitexsofware.cz>
  * @copyright  (G) 2017 Vitex Software
  */
 
-namespace FlexiPeeHP\Relationship;
+namespace AbraFlexi\Relationship;
+
 /**
  *
  * @author vitex
  */
-interface DigestModuleInterface
-{
+interface DigestModuleInterface {
 
     public function heading();
 

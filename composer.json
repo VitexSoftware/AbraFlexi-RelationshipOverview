@@ -1,10 +1,10 @@
 {
     "name": "vitexsoftware/relationship-overview",
-    "description": "Relationship with customer report generator for FlexiBee",
+    "description": "Relationship with customer report generator for AbraFlexi",
     "type": "project",
     "version": "0.1a",
     "require": {
-        "vitexsoftware/ease-twbootstrap4-widgets-flexibee": "dev-master",
+        "vitexsoftware/ease-twbootstrap4-widgets-flexibee": "dev-abraflexi",
         "vitexsoftware/ease-twbootstrap4-widgets": "dev-master"
     },
     "license": "MIT",
@@ -17,7 +17,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "FlexiPeeHP\\Relationship\\": "src/Relationship/"
+            "AbraFlexi\\Relationship\\": "src/Relationship/"
         }
     }
 }

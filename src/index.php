@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Faktura Přijatá do závazků
  *
@@ -6,53 +7,63 @@
  * @copyright (c) 2019, Vitex Software
  */
 
-namespace FlexiPeeHP\Relationship;
+namespace AbraFlexi\Relationship;
+
+use AbraFlexi\Adresar;
+use AbraFlexi\Relationship\ui\OptionsForm;
+use AbraFlexi\RO;
+use DateInterval;
+use DatePeriod;
+use DateTime;
+use Ease\Html\ATag;
+use Ease\Shared;
+use Ease\TWB4\Container;
+use Ease\WebPage;
 
 require_once './init.php';
 
-$shared = \Ease\Shared::instanced();
+$shared = Shared::instanced();
 
-$kod = \Ease\WebPage::getRequestValue('kod');
+$kod = WebPage::getRequestValue('kod');
 
 if (empty($kod)) {
-    die(_('Bad call'));
+    $oPage->addStatusMessage(_('Bad call'), 'warning');
+    $oPage->addItem(new ATag('install.php', _('Please setup your AbraFlexi connection')));
 } else {
-    $addresser = new \FlexiPeeHP\Adresar(\FlexiPeeHP\FlexiBeeRO::code($kod));
+    $addresser = new Adresar(RO::code($kod));
 
     if ($oPage->isPosted()) {
-        $from  = \Ease\WebPage::getRequestValue('from');
-        $to    = \Ease\WebPage::getRequestValue('to');
-        $start = new \DateTime();
+        $from = WebPage::getRequestValue('from');
+        $to = WebPage::getRequestValue('to');
+        $start = new DateTime();
         list($year, $month, $day) = explode('-', $from);
         $start->setDate($year, $month, $day);
 
-        $end = new \DateTime();
+        $end = new DateTime();
         list($year, $month, $day) = explode('-', $to);
         $end->setDate($year, $month, $day);
 
-
-        $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
+        $period = new DatePeriod($start, new DateInterval('P1D'), $end);
 
         $subject = sprintf(
-            _('FlexiBee Relationship overview with %s digest from %s to %s'),
-            $addresser->getDataValue('nazev'),
-            \strftime('%x', $period->getStartDate()->getTimestamp()),
-            \strftime('%x', $period->getEndDate()->getTimestamp())
+                _('AbraFlexi Relationship overview with %s digest from %s to %s'),
+                $addresser->getDataValue('nazev'),
+                \strftime('%x', $period->getStartDate()->getTimestamp()),
+                \strftime('%x', $period->getEndDate()->getTimestamp())
         );
 
         $digestor = new Digestor($subject, $addresser);
 
         $shared->setConfigValue('EASE_MAILTO',
-            $oPage->getRequestValue('recipient'));
-
+                $oPage->getRequestValue('recipient'));
 
         $digestor->dig($period, $oPage->getRequestValue('modules'));
 
-        $digestor->addItem(new \Ease\Html\ATag('index.php?kod='.$addresser->getDataValue('kod'),
-                _('Change Options')));
+        $digestor->addItem(new ATag('index.php?kod=' . $addresser->getDataValue('kod'),
+                        _('Change Options')));
 
         $oPage->setPageTitle($subject);
-        $oPage->body = $digestor;
+        $oPage->body->addItem($digestor);
         $oPage->draw();
         exit();
     } else {
@@ -60,11 +71,11 @@ if (empty($kod)) {
 
 
 
-//    $outInvoice         = new \FlexiPeeHP\FakturaVydana();
-//    $outInvoiceOverview = $outInvoice->getSumFromFlexibee(['firma' => \FlexiPeeHP\FlexiBeeRO::code($kod)]);
+//    $outInvoice         = new \AbraFlexi\FakturaVydana();
+//    $outInvoiceOverview = $outInvoice->getSumFromAbraFlexi(['firma' => \AbraFlexi\RO::code($kod)]);
 //
-//    $inInvoice         = new \FlexiPeeHP\FakturaPrijata();
-//    $inInvoiceOverview = $inInvoice->getSumFromFlexibee(['firma' => \FlexiPeeHP\FlexiBeeRO::code($kod)]);
+//    $inInvoice         = new \AbraFlexi\FakturaPrijata();
+//    $inInvoiceOverview = $inInvoice->getSumFromAbraFlexi(['firma' => \AbraFlexi\RO::code($kod)]);
 //
 //    $oPage->addItem('<h1>Vydane</h1>');
 //    $oPage->addItem('<pre>'.print_r($outInvoiceOverview, true).'</pre>');
@@ -74,10 +85,10 @@ if (empty($kod)) {
 
 
 
-        $oPage->addItem(new \Ease\TWB4\Container(new ui\OptionsForm($addresser)));
+        $oPage->addItem(new Container(new OptionsForm($addresser)));
     }
 }
 
-$oPage->addItem($oPage->getStatusMessagesAsHtml());
+$oPage->addItem($oPage->getStatusMessagesBlock());
 
 echo $oPage;
