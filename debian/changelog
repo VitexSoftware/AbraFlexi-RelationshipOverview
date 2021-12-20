@@ -1,0 +1,6 @@
+abraflexi-relationship (0.1) UNRELEASED; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Mon, 20 Dec 2021 22:16:52 +0100
