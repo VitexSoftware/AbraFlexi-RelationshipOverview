@@ -1,0 +1,16 @@
+debian/composer.json       	usr/lib/abraflexi-relationship/
+debian/conf/abraflexi-relationship.conf /etc/apache2/conf-available/
+src/*.php		        usr/share/abraflexi-relationship/
+src/modules/*		        usr/lib/abraflexi-relationship/
+#src/modules.daily/*	        usr/lib/abraflexi-relationship/daily/
+#src/modules.weekly/*	        usr/lib/abraflexi-relationship/weekly/
+src/modules.monthly/*	        usr/lib/abraflexi-relationship/monthly/
+#src/modules.yearly/*	        usr/lib/abraflexi-relationship/yearly/
+#src/modules.alltime/*	        usr/lib/abraflexi-relationship/alltime/
+src/relationship/*              usr/share/abraflexi-relationship/relationship/
+src/css/*.css                   usr/share/abraflexi-relationship/css/
+src/css/themes/*.css            usr/share/abraflexi-relationship/css/themes
+bin/*                           usr/bin/
+i18n/cs_CZ/LC_MESSAGES/*.mo     usr/share/locale/cs_CZ/LC_MESSAGES
+i18n/en_US/LC_MESSAGES/*.mo     usr/share/locale/en_US/LC_MESSAGES
+#debian/conf/relationship.json   etc/abraflexi/

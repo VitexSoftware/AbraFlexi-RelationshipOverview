@@ -1,0 +1,16 @@
+Source: abraflexi-relationship
+Section: unknown
+Priority: optional
+Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.5.0
+Homepage: https://github.com/Vitexus/RelationshipOverview
+#Vcs-Git: https://salsa.debian.org/debian/abraflexi-relationship.git
+#Vcs-Browser: https://salsa.debian.org/debian/abraflexi-relationship
+
+Package: abraflexi-relationship
+Architecture: all
+Depends: ${shlibs:Depends}, debian-composer, php-spojenet-abraflexi, php-vitexsoftware-abraflexi-bricks, php-vitexsoftware-ease-bootstrap4-widgets, php-vitexsoftware-ease-bootstrap4-widgets-abraflexi,
+	${misc:Depends}
+Description: Relationship with customer report generator for AbraFlexi
+ Add button "Relationship" into your AbraFlexi 

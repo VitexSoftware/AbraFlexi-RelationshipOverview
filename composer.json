@@ -2,10 +2,10 @@
     "name": "vitexsoftware/relationship-overview",
     "description": "Relationship with customer report generator for AbraFlexi",
     "type": "project",
-    "version": "0.1a",
+    "version": "0.1",
     "require": {
-        "vitexsoftware/ease-twbootstrap4-widgets-flexibee": "dev-abraflexi",
-        "vitexsoftware/ease-twbootstrap4-widgets": "dev-master"
+        "vitexsoftware/ease-twbootstrap4-widgets-flexibee": "*",
+        "vitexsoftware/ease-twbootstrap4-widgets": "*"
     },
     "license": "MIT",
     "authors": [
@@ -14,7 +14,7 @@
             "email": "info@vitexsoftware.cz"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "AbraFlexi\\Relationship\\": "src/Relationship/"
