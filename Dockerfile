@@ -1,7 +1,7 @@
 FROM debian:latest
 MAINTAINER Vítězslav Dvořák <info@vitexsoftware.cz>
-ENV DEBIAN_FRONTEND=noninteractive
 ENV PHPVER=7.4
+ENV DEBIAN_FRONTEND=noninteractive
 ENV APACHE_DOCUMENT_ROOT /usr/share/abraflexi-relationship
 
 RUN apt update

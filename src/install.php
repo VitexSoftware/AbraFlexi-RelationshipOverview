@@ -41,6 +41,8 @@ $loginForm->addItem(new \Ease\TWB4\SubmitButton(_('Install Button'), 'success bt
 
 $baseUrl = \Ease\WebPage::getRequestValue('myurl') . '/index.php?authSessionId=${authSessionId}&companyUrl=${companyUrl}';
 
+$buttonUrl = $baseUrl .= '&kod=${object.kod}&id=${object.id}';
+
 if ($oPage->isPosted()) {
     $browser = isset($_REQUEST) && array_key_exists('browser', $_REQUEST) ? 'automatic' : 'desktop';
 
@@ -49,9 +51,15 @@ if ($oPage->isPosted()) {
 
     $buttoner->logBanner(constant('EASE_APPNAME'));
 
-    $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP', 'url' => $baseUrl . '&kod=${object.kod}',
+    $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP_LIST', 'url' => $buttonUrl,
         'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
         'location' => 'list', 'evidence' => 'adresar', 'browser' => $browser]);
+    
+    $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP_DETAIL', 'url' => $buttonUrl,
+        'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
+        'location' => 'detail', 'evidence' => 'adresar', 'browser' => $browser]);
+
+    
     if ($buttoner->lastResponseCode == 201) {
         $buttoner->addStatusMessage(_('Relationship Overview Button created'),
                 'success');
