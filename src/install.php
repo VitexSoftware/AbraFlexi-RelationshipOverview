@@ -51,14 +51,9 @@ if ($oPage->isPosted()) {
 
     $buttoner->logBanner(constant('EASE_APPNAME'));
 
-    $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP_LIST', 'url' => $buttonUrl,
-        'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
-        'location' => 'list', 'evidence' => 'adresar', 'browser' => $browser]);
-    
-    $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP_DETAIL', 'url' => $buttonUrl,
+    $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP', 'url' => $buttonUrl,
         'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
         'location' => 'detail', 'evidence' => 'adresar', 'browser' => $browser]);
-
     
     if ($buttoner->lastResponseCode == 201) {
         $buttoner->addStatusMessage(_('Relationship Overview Button created'),

@@ -218,8 +218,7 @@ class Digestor extends DivTag {
                     $class = pathinfo($moduleDir, PATHINFO_FILENAME);
                     $modules[$class] = realpath($moduleDir);
                 } else {
-                    Shared::instanced()->addStatusMessage(sprintf(_('Module dir %s is wrong'),
-                                    $moduleDir), 'error');
+                    \Ease\Shared::logger()->addToLog('Relationship', sprintf(_('Module dir %s is wrong'), $moduleDir), 'error');
                 }
             }
         }
