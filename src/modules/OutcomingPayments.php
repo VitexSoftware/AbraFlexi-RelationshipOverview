@@ -91,10 +91,7 @@ class OutcomingPayments extends DigestModule implements DigestModuleInterface {
                 unset($incomingPaymentData['id']);
                 unset($incomingPaymentData['mena']);
                 unset($incomingPaymentData['storno']);
-                unset($incomingPaymentData['banka@ref']);
                 unset($incomingPaymentData['banka']);
-                unset($incomingPaymentData['mena@ref']);
-                unset($incomingPaymentData['mena@showAs']);
 
                 $incomingPaymentData['sumCelkem'] = $amount;
                 unset($incomingPaymentData['sumCelkemMen']);

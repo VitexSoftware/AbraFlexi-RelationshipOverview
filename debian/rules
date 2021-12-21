@@ -18,3 +18,4 @@ override_dh_install:
 	sed -i -e 's/..\/i18n/\/usr\/share\/locale/g'            	        debian/abraflexi-relationship/usr/share/abraflexi-relationship/init.php
 	sed -i -e 's/\.\./\/etc\/abraflexi/g'                                   debian/abraflexi-relationship/usr/share/abraflexi-relationship/init.php
 	sed -i -e "/MODULE_PATH/c\define('MODULE_PATH', '/usr/lib/abraflexi-relationship/modules');"          debian/abraflexi-relationship/usr/share/abraflexi-relationship/init.php
+	sed -i -e 's/\.\./\/usr\/lib\/abraflexi-relationship/'       debian/abraflexi-relationship/usr/lib/abraflexi-relationship/Relationship/Digestor.php
