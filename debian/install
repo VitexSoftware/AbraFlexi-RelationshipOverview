@@ -2,7 +2,7 @@ debian/composer.json       	usr/lib/abraflexi-relationship/
 debian/conf/abraflexi-relationship.conf /etc/apache2/conf-available/
 src/*.php		        usr/share/abraflexi-relationship/
 src/modules/*		        usr/lib/abraflexi-relationship/modules
-src/Relationship/*              usr/share/abraflexi-relationship/Relationship/
+src/Relationship/*              usr/lib/abraflexi-relationship/Relationship/
 #src/css/*.css                   usr/share/abraflexi-relationship/css/
 #src/css/themes/*.css            usr/share/abraflexi-relationship/css/themes
 #bin/*                           usr/bin/
