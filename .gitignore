@@ -3,3 +3,5 @@
 /composer.lock
 /debian/conf/ssmtp.conf
 /debian/relationship-overview/
+/debian/.debhelper/
+/debian/abraflexi-relationship/
