@@ -26,6 +26,7 @@ Pokud jsou tyto správné, vytvoří se ve AbraFlexi v evidenci adresáře spou�
 
 (Pokud se nepovede autodetekce serveru a portu, zkopírujte prosím tuto hodnotu z adresního řádku do příslušného políčka)
 
+
 Testování
 ---------
 
@@ -34,6 +35,29 @@ Pokud není stránka volána s parametry $authSessionId && $companyUrl pokusí s
 Nasazení
 --------
 
+K dispozici je Docker image
+
 ```
 docker run -d -p ${OUTPORT}:${INPORT} --name ${CONTNAME} vitexsoftware/abraflexi-relationship
 ```
+
+Nebo debianí balíček k instalaci na server se sytémem Debian či Ubuntu:
+
+```
+sudo apt install lsb-release wget apt-transport-https bzip2
+
+sudo wget -O /usr/share/keyrings/vitexsoftware.gpg https://repo.vitexsoftware.cz/keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/vitexsoftware.gpg]  https://repo.vitexsoftware.com  $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/vitexsoftware.list
+sudo apt update
+
+sudo apt install abraflexi-relationship
+```
+
+Pokud používáte apache, je třeba aktivovat jeho konfiguraci:
+
+```
+a2enconf abraflexi-relationship
+apache2ctl restart
+```
+
+Poté je aplikace dostupná bez další konfigurace na http://0.0.0.0/abraflexi-relationship/

@@ -9,3 +9,6 @@ dtest:
         
 drun: dimage
 	docker run  -dit --name RelationshipOverview -p 9999:80 vitexsoftware/abraflexi-relationship-overview:`dpkg-parsechangelog | sed -n 's/^Version: //p'| sed 's/~.*//'`
+
+dpush:
+	docker push vitexsoftware/abraflexi-relationship-overview:`dpkg-parsechangelog | sed -n 's/^Version: //p'| sed 's/~.*//'`
