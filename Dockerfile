@@ -1,8 +1,8 @@
 FROM debian:latest
 MAINTAINER Vítězslav Dvořák <info@vitexsoftware.cz>
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PHPVER=7.4
 ENV APACHE_DOCUMENT_ROOT /usr/share/abraflexi-relationship
-ENV CURRENT=7.4
 
 RUN apt update
 RUN apt-get update && apt-get install -my wget gnupg lsb-release
@@ -20,9 +20,9 @@ RUN a2enconf abraflexi-relationship
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-RUN sudo cp /usr/lib/php/${CURRENT}/php.ini-development /etc/php/${CURRENT}/apache2/php.ini
+RUN sudo cp /usr/lib/php/${PHPVER}/php.ini-development /etc/php/${PHPVER}/apache2/php.ini
     
-COPY debian/conf/mail.ini   /etc/php/${CURRENT}/conf.d/mail.ini
+COPY debian/conf/mail.ini   /etc/php/${PHPVER}/conf.d/mail.ini
 COPY debian/conf/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 ENV APACHE_RUN_USER www-data
