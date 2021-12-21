@@ -1,4 +1,4 @@
-abraflexi-relationship (0.2) UNRELEASED; urgency=low
+abraflexi-relationship (0.2.2) UNRELEASED; urgency=low
 
   [ Vítězslav Dvořák ]
   * Initial release. Closes: #nnnn
@@ -6,5 +6,7 @@ abraflexi-relationship (0.2) UNRELEASED; urgency=low
 
   [ vitex ]
   * Debianized/Dockerized
+  * small fix
+  * try to build
 
- -- vitex <info@vitexsoftware.cz>  Tue, 21 Dec 2021 18:13:21 +0100
+ -- vitex <info@vitexsoftware.cz>  Tue, 21 Dec 2021 21:15:49 +0100
