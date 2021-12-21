@@ -20,7 +20,7 @@ use Ease\Shared;
 use Ease\TWB4\Container;
 use Ease\WebPage;
 
-require_once './init.php';
+require './init.php';
 
 $shared = Shared::instanced();
 

@@ -1,8 +1,8 @@
 FROM debian:latest
 MAINTAINER Vítězslav Dvořák <info@vitexsoftware.cz>
-ENV CURRENT=7.4
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APACHE_DOCUMENT_ROOT /usr/share/abraflexi-relationship
+ENV CURRENT=7.4
 
 RUN apt update
 RUN apt-get update && apt-get install -my wget gnupg lsb-release
