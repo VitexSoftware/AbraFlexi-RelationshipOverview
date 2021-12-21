@@ -60,7 +60,7 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface {
                     $storno++;
                 }
                 $currency = self::getCurrency($outInvoiceData);
-                $typDokl = $outInvoiceData['typDokl'];
+                $typDokl = \AbraFlexi\RO::uncode($outInvoiceData['typDokl']);
 
                 if ($currency != 'CZK') {
                     $amount = floatval($outInvoiceData['sumCelkemMen']);
@@ -111,7 +111,7 @@ class OutcomingInvoices extends DigestModule implements DigestModuleInterface {
                 $outInvoiceData['juhSum'] = $settled;
                 unset($outInvoiceData['juhSumMen']);
                 $outInvoiceData['mena'] = $currency;
-
+                $outInvoiceData['datVyst'] =   $outInvoiceData['datVyst']->format('c');
                 $listingTable->addRowColumns($outInvoiceData);
             }
 

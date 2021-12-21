@@ -106,8 +106,8 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface {
      * @return string
      */
     public static function getCurrency($data) {
-        return array_key_exists('mena@showAs', $data) ? current(explode(':',
-                                $data['mena@showAs'])) : \AbraFlexi\RO::uncode($data['mena']);
+        return array_key_exists('mena', $data) ? current(explode(':',
+                                $data['mena']->showAs)) : strval($data['mena']);
     }
 
     /**
