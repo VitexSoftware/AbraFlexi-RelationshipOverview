@@ -14,6 +14,6 @@
 override_dh_install:
 	jq '.version = "'`dpkg-parsechangelog | sed -n 's/^Version: //p'| sed 's/~.*//' `'"'  debian/composer.json |sponge debian/composer.json
 	dh_install
-	sed -i -e '/dirname(__DIR__) /c\require_once "\/var\/lib\/composer\/abraflexi-relationship/autoload.php";' debian/abraflexi-relationship/usr/share/abraflexi-relationship/init.php
+	sed -i -e '/require_once/c\require_once "\/var\/lib\/composer\/abraflexi-relationship/autoload.php";' debian/abraflexi-relationship/usr/share/abraflexi-relationship/*.php
 	sed -i -e 's/..\/i18n/\/usr\/share\/locale/g'            	        debian/abraflexi-relationship/usr/share/abraflexi-relationship/init.php
 	sed -i -e 's/\.\./\/etc\/abraflexi/g'                                   debian/abraflexi-relationship/usr/share/abraflexi-relationship/init.php
