@@ -4,7 +4,7 @@
  * Faktura Přijatá do závazků
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
- * @copyright (c) 2019, Vitex Software
+ * @copyright (c) 2019-2021, Vitex Software
  */
 
 namespace AbraFlexi\Relationship;
