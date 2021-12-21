@@ -37,6 +37,8 @@ $loginForm->addInput(new Toggle('browser',
 
 $loginForm->fillUp($_REQUEST);
 
+$loginForm->addItem(new \Ease\TWB4\SubmitButton(_('Install Button'), 'success btn-lg btn-block'));
+
 $baseUrl = \Ease\WebPage::getRequestValue('myurl') . '/index.php?authSessionId=${authSessionId}&companyUrl=${companyUrl}';
 
 if ($oPage->isPosted()) {

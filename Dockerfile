@@ -17,8 +17,10 @@ RUN apt -y install abraflexi-relationship
 RUN a2dissite 000-default
 RUN a2enconf abraflexi-relationship
 
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+#RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+#RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+RUN echo "<?php header('Location: /abraflexi-relationship/');" > /var/www/html/index.php ; rm /var/www/html/index.html
 
 RUN sudo cp /usr/lib/php/${PHPVER}/php.ini-development /etc/php/${PHPVER}/apache2/php.ini
     
