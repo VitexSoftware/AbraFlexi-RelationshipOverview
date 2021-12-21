@@ -26,6 +26,7 @@ Pokud jsou tyto správné, vytvoří se ve AbraFlexi v evidenci adresáře spou�
 
 (Pokud se nepovede autodetekce serveru a portu, zkopírujte prosím tuto hodnotu z adresního řádku do příslušného políčka)
 
+Aplikace v chodu je k vyzkoušení [abraflexi-relationship.vitexsoftware.com](https://abraflexi-relationship.vitexsoftware.com/)
 
 Testování
 ---------

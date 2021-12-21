@@ -58,7 +58,7 @@ class OutcomingPayments extends DigestModule implements DigestModuleInterface {
 
                 $exposed++;
                 $currency = self::getCurrency($incomingPaymentData);
-                $banka = \Ease\AbraFlexi::uncode($incomingPaymentData['banka']);
+                $banka = \AbraFlexi\RO::uncode($incomingPaymentData['banka']);
 
                 if ($currency != 'CZK') {
                     $amount = floatval($incomingPaymentData['sumCelkemMen']);
