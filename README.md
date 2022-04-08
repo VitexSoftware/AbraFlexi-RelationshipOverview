@@ -36,7 +36,7 @@ Pokud není stránka volána s parametry $authSessionId && $companyUrl pokusí s
 Nasazení
 --------
 
-K dispozici je Docker image
+K dispozici je Docker image: https://hub.docker.com/r/vitexsoftware/abraflexi-relationship-overview/tags
 
 ```
 docker run -d -p ${OUTPORT}:${INPORT} --name ${CONTNAME} vitexsoftware/abraflexi-relationship

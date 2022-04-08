@@ -1,7 +1,6 @@
 FROM debian:latest
 MAINTAINER Vítězslav Dvořák <info@vitexsoftware.cz>
 ENV DEBIAN_FRONTEND=noninteractive
-ENV APACHE_DOCUMENT_ROOT /usr/share/abraflexi-relationship
 ENV PHPVER=7.4
 
 RUN apt update
@@ -17,12 +16,9 @@ RUN apt -y install abraflexi-relationship
 RUN a2dissite 000-default
 RUN a2enconf abraflexi-relationship
 
-#RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-#RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
 RUN echo "<?php header('Location: /abraflexi-relationship/');" > /var/www/html/index.php ; rm /var/www/html/index.html
 
-RUN sudo cp /usr/lib/php/${PHPVER}/php.ini-development /etc/php/${PHPVER}/apache2/php.ini
+#RUN sudo cp /usr/lib/php/${PHPVER}/php.ini-development /etc/php/${PHPVER}/apache2/php.ini
     
 COPY debian/conf/mail.ini   /etc/php/${PHPVER}/conf.d/mail.ini
 COPY debian/conf/ssmtp.conf /etc/ssmtp/ssmtp.conf
