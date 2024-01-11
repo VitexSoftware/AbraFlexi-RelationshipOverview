@@ -1,17 +1,17 @@
 <?php
 
 /**
- * AbraFlexi Custom Button Installer 
+ * AbraFlexi Custom Button Installer
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
 
 namespace AbraFlexi\Relationship;
 
-use \Ease\TWB4\Row;
-use \Ease\TWB4\WebPage;
-use \Ease\TWB4\Container;
-use \Ease\TWB4\Widgets\Toggle;
-use \AbraFlexi\ui\TWB4\ConnectionForm;
+use Ease\TWB4\Row;
+use Ease\TWB4\WebPage;
+use Ease\TWB4\Container;
+use Ease\TWB4\Widgets\Toggle;
+use AbraFlexi\ui\TWB4\ConnectionForm;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -28,10 +28,15 @@ if (empty(\Ease\WebPage::getRequestValue('myurl'))) {
 
 $loginForm = new ConnectionForm(['action' => 'install.php']);
 
-$loginForm->addInput(new Toggle('browser',
-                isset($_REQUEST) && array_key_exists('browser', $_REQUEST), 'automatic',
-                ['data-on' => _('AbraFlexi WebView'), 'data-off' => _('System Browser')]),
-        _('Open results in AbraFlexi WebView or in System default browser'));
+$loginForm->addInput(
+    new Toggle(
+        'browser',
+        isset($_REQUEST) && array_key_exists('browser', $_REQUEST),
+        'automatic',
+        ['data-on' => _('AbraFlexi WebView'), 'data-off' => _('System Browser')]
+    ),
+    _('Open results in AbraFlexi WebView or in System default browser')
+);
 
 //$loginForm->addInput( new \Ease\Html\InputUrlTag('myurl'), _('My Url'), dirname(\Ease\Page::phpSelf()), sprintf( _('Same url as you can see in browser without %s'), basename( __FILE__ ) ) );
 
@@ -46,18 +51,22 @@ $buttonUrl = $baseUrl .= '&kod=${object.kod}&id=${object.id}';
 if ($oPage->isPosted()) {
     $browser = isset($_REQUEST) && array_key_exists('browser', $_REQUEST) ? 'automatic' : 'desktop';
 
-    $buttoner = new \AbraFlexi\RW(null,
-            array_merge($_REQUEST, ['evidence' => 'custom-button']));
+    $buttoner = new \AbraFlexi\RW(
+        null,
+        array_merge($_REQUEST, ['evidence' => 'custom-button'])
+    );
 
     $buttoner->logBanner(constant('EASE_APPNAME'));
 
     $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP', 'url' => $buttonUrl,
         'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
         'location' => 'detail', 'evidence' => 'adresar', 'browser' => $browser]);
-    
+
     if ($buttoner->lastResponseCode == 201) {
-        $buttoner->addStatusMessage(_('Relationship Overview Button created'),
-                'success');
+        $buttoner->addStatusMessage(
+            _('Relationship Overview Button created'),
+            'success'
+        );
 
         define('ABRAFLEXI_COMPANY', $buttoner->getCompany());
     }
@@ -74,4 +83,3 @@ $setupRow->addColumn(6, [Digestor::$logo, $oPage->getStatusMessagesBlock()]);
 $oPage->addItem(new Container($setupRow));
 
 echo $oPage;
-

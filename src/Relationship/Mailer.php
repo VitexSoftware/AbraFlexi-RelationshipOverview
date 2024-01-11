@@ -8,14 +8,15 @@ namespace AbraFlexi\Relationship;
  * @author     Vítězslav Dvořák <info@vitexsofware.cz>
  * @copyright  (G) 2017 Vitex Software
  */
-class Mailer extends \Ease\HtmlMailer {
-
+class Mailer extends \Ease\HtmlMailer
+{
     /**
-     * 
+     *
      * @param string $subject
      * @param \Ease\Container   $moduleDir
      */
-    public function __construct($sendTo, $subject) {
+    public function __construct($sendTo, $subject)
+    {
         $shared = \Ease\Shared::instanced();
         $this->fromEmailAddress = $shared->getConfigValue('DIGEST_FROM');
         parent::__construct($sendTo, $subject);
@@ -36,7 +37,8 @@ class Mailer extends \Ease\HtmlMailer {
      *
      * @return Ease\pointer|null ukazatel na vložený obsah
      */
-    public function &addItem($item, $pageItemName = null) {
+    public function &addItem($item, $pageItemName = null)
+    {
         $mailBody = '';
         if (is_object($item)) {
             if (is_object($this->htmlDocument)) {
@@ -45,7 +47,6 @@ class Mailer extends \Ease\HtmlMailer {
                 }
                 $mailBody = $this->htmlBody->addItem($item, $pageItemName);
             } else {
-
                 $mailBody = $this->htmlDocument;
             }
         } else {
@@ -56,8 +57,7 @@ class Mailer extends \Ease\HtmlMailer {
         return $mailBody;
     }
 
-    public function getCss() {
-        
+    public function getCss()
+    {
     }
-
 }

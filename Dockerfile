@@ -1,13 +1,12 @@
 FROM debian:latest
 MAINTAINER Vítězslav Dvořák <info@vitexsoftware.cz>
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PHPVER=7.4
+ENV PHPVER=8.2
 
 RUN apt update
 RUN apt-get update && apt-get install -my wget gnupg lsb-release
 
-RUN echo "deb http://repo.vitexsoftware.cz $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/vitexsoftware.list
-RUN echo "deb http://repo.vitexsoftware.com $(lsb_release -sc) main" | tee -a /etc/apt/sources.list.d/vitexsoftware.list
+RUN echo "deb http://repo.vitexsoftware.com $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/vitexsoftware.list
 RUN wget -O /etc/apt/trusted.gpg.d/vitexsoftware.gpg http://repo.vitexsoftware.com/keyring.gpg
 RUN apt update
 RUN apt-get -y upgrade

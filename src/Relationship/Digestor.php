@@ -36,29 +36,29 @@ use Ease\Shared;
  *
  * @author vitex
  */
-class Digestor extends DivTag {
-
+class Digestor extends DivTag
+{
     /**
      * Subject
-     * @var string 
+     * @var string
      */
     private $subject;
 
     /**
      * Index of included modules
-     * @var array 
+     * @var array
      */
     private $index = [];
 
     /**
      * Default Style
-     * @var string 
+     * @var string
      */
     static $mailcss = null;
 
     /**
      * App Logo
-     * @var string 
+     * @var string
      */
     static $logo = '<?xml version="1.0" encoding="UTF-8"?>
 <svg width="48" height="48" version="1.1" viewBox="0 0 12.7 12.7" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -89,23 +89,24 @@ class Digestor extends DivTag {
 </svg>';
 
     /**
-     * Top menu 
-     * @var DivTag 
+     * Top menu
+     * @var DivTag
      */
     public $topMenu;
 
     /**
      *
-     * @var array 
+     * @var array
      */
     public $defaultModuleConditions;
 
     /**
      * Digest Engine
-     * 
+     *
      * @param string $subject
      */
-    public function __construct($subject, Adresar $customer) {
+    public function __construct($subject, Adresar $customer)
+    {
         parent::__construct();
         $this->defaultModuleConditions['firma'] = $customer->getRecordCode();
         $this->defaultModuleConditions['storno'] = false;
@@ -117,7 +118,8 @@ class Digestor extends DivTag {
     /**
      * Digest page Heading
      */
-    public function addHeading($subject) {
+    public function addHeading($subject)
+    {
         $this->addItem(new ATag('', '', ['name' => 'index']));
         $this->addItem(new CompanyLogo(['align' => 'right', 'id' => 'companylogo',
                     'height' => '50', 'title' => _('Company logo')]));
@@ -129,26 +131,35 @@ class Digestor extends DivTag {
             $info = Functions::reindexArrayBy($infoRaw, 'dbNazev');
             $myCompany = $prober->getCompany();
             if (array_key_exists($myCompany, $info)) {
-                $return = new ATag($prober->url . '/c/' . $myCompany,
-                        $info[$myCompany]['nazev']);
+                $return = new ATag(
+                    $prober->url . '/c/' . $myCompany,
+                    $info[$myCompany]['nazev']
+                );
             } else {
-                $return = new ATag($prober->getApiURL(),
-                        _('Connection Problem'));
+                $return = new ATag(
+                    $prober->getApiURL(),
+                    _('Connection Problem')
+                );
             }
         }
 
-        $this->addItem(new StrongTag($return,
-                        ['class' => 'companylink']));
-        $this->topMenu = $this->addItem(new NavTag(null,
-                        ['class' => 'nav']));
+        $this->addItem(new StrongTag(
+            $return,
+            ['class' => 'companylink']
+        ));
+        $this->topMenu = $this->addItem(new NavTag(
+            null,
+            ['class' => 'nav']
+        ));
     }
 
     /**
      * Include all classes in modules directory
-     * 
+     *
      * @param DateInterval $interval
      */
-    public function dig($interval, $moduleDir) {
+    public function dig($interval, $moduleDir)
+    {
         $this->processModules(self::getModules($moduleDir), $interval);
 
         $this->addIndex();
@@ -167,11 +178,12 @@ class Digestor extends DivTag {
 
     /**
      * Process All modules in specified Dir
-     * 
+     *
      * @param array $modules [classname=>filepath]
      * @param DateTime|DatePeriod $interval
      */
-    public function processModules($modules, $interval) {
+    public function processModules($modules, $interval)
+    {
         foreach ($modules as $class => $classFile) {
             include_once $classFile;
             $module = new $class($interval, $this->defaultModuleConditions);
@@ -183,8 +195,10 @@ class Digestor extends DivTag {
                     $module->saveToHtml($saveto);
                 }
             } else {
-                $this->addStatusMessage(sprintf(_('Module %s do not found results'),
-                                $class));
+                $this->addStatusMessage(sprintf(
+                    _('Module %s do not found results'),
+                    $class
+                ));
                 if ($saveto) {
                     $module->fileCleanUP($saveto);
                 }
@@ -194,10 +208,11 @@ class Digestor extends DivTag {
 
     /**
      * Process All modules in specified Dir
-     * 
+     *
      * @param string $moduleDir path
      */
-    public static function getModules($moduleDir) {
+    public static function getModules($moduleDir)
+    {
         $modules = [];
         if (is_array($moduleDir)) {
             foreach ($moduleDir as $module) {
@@ -227,34 +242,49 @@ class Digestor extends DivTag {
 
     /**
      * Add Element to Index
-     * 
+     *
      * @param DigestModule $element
      */
-    public function addToIndex($element) {
+    public function addToIndex($element)
+    {
         $this->index[get_class($element)] = $element->heading();
     }
 
     /**
      * Add Index to digest
      */
-    public function addIndex() {
-        $this->addItem(new H1Tag(new ATag('', _('Index'),
-                                ['name' => 'index2'])));
+    public function addIndex()
+    {
+        $this->addItem(new H1Tag(new ATag(
+            '',
+            _('Index'),
+            ['name' => 'index2']
+        )));
         $this->addItem(new HrTag());
 
         $index = new UlTag(null, ['class' => 'nav']);
 
         foreach ($this->index as $class => $heading) {
-            $index->addItemSmart(new ATag('#' . $class, $heading,
-                            ['class' => 'nav-link']),
-                    ['class' => 'nav-item']);
+            $index->addItemSmart(
+                new ATag(
+                    '#' . $class,
+                    $heading,
+                    ['class' => 'nav-link']
+                ),
+                ['class' => 'nav-item']
+            );
 
-            $this->topMenu->addItem(new ATag('#' . $class, $heading,
-                            ['class' => 'nav-link']));
+            $this->topMenu->addItem(new ATag(
+                '#' . $class,
+                $heading,
+                ['class' => 'nav-link']
+            ));
         }
 
-        $this->addItem(new UlTag($index,
-                        ['class' => 'nav']));
+        $this->addItem(new UlTag(
+            $index,
+            ['class' => 'nav']
+        ));
     }
 
 //    /**
@@ -271,11 +301,12 @@ class Digestor extends DivTag {
 //    }
 
     /**
-     * Sent digest by mail 
-     * 
+     * Sent digest by mail
+     *
      * @param string $mailto
      */
-    public function sendByMail($mailto) {
+    public function sendByMail($mailto)
+    {
         $postman = new Mailer($mailto, $this->subject);
         $postman->addItem($this);
         $postman->send();
@@ -283,21 +314,27 @@ class Digestor extends DivTag {
 
     /**
      * Save HTML digest
-     * 
+     *
      * @param string $saveTo directory
      */
-    public function saveToHtml($saveTo) {
-        $filename = $saveTo . pathinfo($_SERVER['SCRIPT_FILENAME'],
-                        PATHINFO_FILENAME) . '.html';
+    public function saveToHtml($saveTo)
+    {
+        $filename = $saveTo . pathinfo(
+            $_SERVER['SCRIPT_FILENAME'],
+            PATHINFO_FILENAME
+        ) . '.html';
         $webPage = new HtmlTag(new SimpleHeadTag([
                     new TitleTag($this->subject),
                     '<style>' . Digestor::$mailcss . Digestor::getCustomCss() . Digestor::getWebPageInlineCSS() . '</style>']));
         $webPage->addItem(new BodyTag($this));
-        $this->addStatusMessage(sprintf(_('Saved to %s'), $filename),
-                file_put_contents($filename, $webPage->getRendered()) ? 'success' : 'error');
+        $this->addStatusMessage(
+            sprintf(_('Saved to %s'), $filename),
+            file_put_contents($filename, $webPage->getRendered()) ? 'success' : 'error'
+        );
     }
 
-    static public function getWebPageInlineCSS() {
+    public static function getWebPageInlineCSS()
+    {
 //        $easeShared = \Ease\Shared::webPage();
 //        if (isset($easeShared->cascadeStyles) && count($easeShared->cascadeStyles)) {
 //            $cascadeStyles = [];
@@ -313,10 +350,11 @@ class Digestor extends DivTag {
 
     /**
      * Obtain Custom CSS - THEME in digest.json
-     * 
+     *
      * @return string
      */
-    public static function getCustomCss() {
+    public static function getCustomCss()
+    {
 
 //        $theme   = \Ease\Shared::instanced()->getConfigValue('THEME');
 //        $cssfile = constant('STYLE_DIR').'/'.$theme.'.css';
@@ -325,10 +363,11 @@ class Digestor extends DivTag {
 
     /**
      * Obtain Version of application
-     * 
+     *
      * @return string
      */
-    static public function getAppVersion() {
+    public static function getAppVersion()
+    {
         $composerInfo = json_decode(file_get_contents('../composer.json'), true);
         return array_key_exists('version', $composerInfo) ? $composerInfo['version'] : 'dev-master';
     }
@@ -336,17 +375,24 @@ class Digestor extends DivTag {
     /**
      * Page Bottom
      */
-    public function addFoot() {
+    public function addFoot()
+    {
         $this->addItem(new HrTag());
-        $this->addItem(new ImgTag('data:image/svg+xml;base64,' . base64_encode(self::$logo),
-                        'Logo', ['align' => 'right', 'width' => '50']));
+        $this->addItem(new ImgTag(
+            'data:image/svg+xml;base64,' . base64_encode(self::$logo),
+            'Logo',
+            ['align' => 'right', 'width' => '50']
+        ));
         $this->addItem(new SmallTag(new DivTag([_('Generated by'),
-                            '&nbsp;', new ATag('https://github.com/Vitexus/RelationshipOverview',
-                                    _('AbraFlexi Relationship Overview') . ' ' . _('version') . ' ' . self::getAppVersion())])));
+                            '&nbsp;', new ATag(
+                                'https://github.com/Vitexus/RelationshipOverview',
+                                _('AbraFlexi Relationship Overview') . ' ' . _('version') . ' ' . self::getAppVersion()
+                            )])));
 
         $this->addItem(new SmallTag(new DivTag([_('(G) 2019-2021'),
-                            '&nbsp;', new ATag('https://www.vitexsoftware.cz/',
-                                    'Vitex Software')])));
+                            '&nbsp;', new ATag(
+                                'https://www.vitexsoftware.cz/',
+                                'Vitex Software'
+                            )])));
     }
-
 }

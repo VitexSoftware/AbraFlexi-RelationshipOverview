@@ -17,15 +17,16 @@ use Ease\TWB4\Table;
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
-class IncomingInvoices extends DigestModule implements DigestModuleInterface {
-
+class IncomingInvoices extends DigestModule implements DigestModuleInterface
+{
     /**
      * Column used to filter by date
-     * @var string 
+     * @var string
      */
     public $timeColumn = 'datVyst';
 
-    public function dig() {
+    public function dig()
+    {
         $digger = new FakturaPrijata();
         $outInvoicesData = $digger->getColumnsFromAbraFlexi([
             'kod', 'typDokl',
@@ -47,7 +48,6 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface {
         if (empty($outInvoicesData)) {
             $this->addItem(_('none'));
         } else {
-
             $listingTable = new Table();
             $listingTable->addTagClass('table-sm table-hover table-dark');
 
@@ -56,8 +56,6 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface {
                 _('Currency')]);
 
             foreach ($outInvoicesData as $outInvoiceData) {
-
-
                 $exposed++;
                 if ($outInvoiceData['storno'] == 'true') {
                     $storno++;
@@ -122,13 +120,17 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface {
 
             $this->addItem($listingTable);
 
-            $this->addItem($this->totalsTable($typDoklTotals, $invoicedRaw,
-                            $typDoklCounts));
+            $this->addItem($this->totalsTable(
+                $typDoklTotals,
+                $invoicedRaw,
+                $typDoklCounts
+            ));
         }
         return !empty($outInvoicesData);
     }
 
-    public function totalsTable($typDoklTotals, $invoicedRaw, $typDoklCounts) {
+    public function totalsTable($typDoklTotals, $invoicedRaw, $typDoklCounts)
+    {
         $tableHeader[] = _('Count');
         $tableHeader[] = _('Document type');
         $currencies = array_keys($invoicedRaw);
@@ -145,24 +147,28 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface {
             $tableRow[] = RO::uncode($typDokl);
 
             foreach ($currencies as $currencyCode) {
-                $tableRow[] = array_key_exists($currencyCode,
-                                $typDoklTotals[$typDokl]) ? $typDoklTotals[$typDokl][$currencyCode] : '';
+                $tableRow[] = array_key_exists(
+                    $currencyCode,
+                    $typDoklTotals[$typDokl]
+                ) ? $typDoklTotals[$typDokl][$currencyCode] : '';
             }
             $outInvoicesTable->addRowColumns($tableRow);
         }
         return $outInvoicesTable;
     }
 
-    public function heading() {
+    public function heading()
+    {
         return _('Incoming Invoices');
     }
 
     /**
      * Default Description
-     * 
+     *
      * @return string
      */
-    public function description() {
+    public function description()
+    {
         return _('Invoices we recieved');
     }
 

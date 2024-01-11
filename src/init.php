@@ -9,7 +9,7 @@
 
 namespace AbraFlexi\Relationship;
 
-use \Ease\TWB4\WebPage;
+use Ease\TWB4\WebPage;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -42,8 +42,11 @@ if (array_key_exists('connection', $_SESSION)) {
         $shared->loadConfig($localCfg, true);
     } else {
         if (\Ease\WebPage::getRequestValue('kod')) {
-            $oPage->addItem(new \Ease\TWB4\LinkButton('JavaScript:self.close()',
-                            _('Session Expired'), 'danger'));
+            $oPage->addItem(new \Ease\TWB4\LinkButton(
+                'JavaScript:self.close()',
+                _('Session Expired'),
+                'danger'
+            ));
         } else {
             $oPage->redirect('install.php');
         }
@@ -51,4 +54,3 @@ if (array_key_exists('connection', $_SESSION)) {
         exit();
     }
 }
-

@@ -46,31 +46,31 @@ if (empty($kod)) {
         $period = new DatePeriod($start, new DateInterval('P1D'), $end);
 
         $subject = sprintf(
-                _('AbraFlexi Relationship overview with %s digest from %s to %s'),
-                $addresser->getDataValue('nazev'),
-                \strftime('%x', $period->getStartDate()->getTimestamp()),
-                \strftime('%x', $period->getEndDate()->getTimestamp())
+            _('AbraFlexi Relationship overview with %s digest from %s to %s'),
+            $addresser->getDataValue('nazev'),
+            \strftime('%x', $period->getStartDate()->getTimestamp()),
+            \strftime('%x', $period->getEndDate()->getTimestamp())
         );
 
         $digestor = new Digestor($subject, $addresser);
 
-        $shared->setConfigValue('EASE_MAILTO',
-                $oPage->getRequestValue('recipient'));
+        $shared->setConfigValue(
+            'EASE_MAILTO',
+            $oPage->getRequestValue('recipient')
+        );
 
         $digestor->dig($period, $oPage->getRequestValue('modules'));
 
-        $digestor->addItem(new ATag('index.php?kod=' . $addresser->getDataValue('kod'),
-                        _('Change Options')));
+        $digestor->addItem(new ATag(
+            'index.php?kod=' . $addresser->getDataValue('kod'),
+            _('Change Options')
+        ));
 
         $oPage->setPageTitle($subject);
         $oPage->body->addItem($digestor);
         $oPage->draw();
         exit();
     } else {
-
-
-
-
 //    $outInvoice         = new \AbraFlexi\FakturaVydana();
 //    $outInvoiceOverview = $outInvoice->getSumFromAbraFlexi(['firma' => \AbraFlexi\RO::code($kod)]);
 //

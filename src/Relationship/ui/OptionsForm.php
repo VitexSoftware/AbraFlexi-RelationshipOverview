@@ -31,10 +31,12 @@ use Ease\WebPage;
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
-class OptionsForm extends Form {
-
-    public function __construct(Adresar $customer,
-            $tagProperties = array()) {
+class OptionsForm extends Form
+{
+    public function __construct(
+        Adresar $customer,
+        $tagProperties = array()
+    ) {
         $from = WebPage::getRequestValue('from');
         $to = WebPage::getRequestValue('to');
 
@@ -55,7 +57,7 @@ class OptionsForm extends Form {
             $end->setDate($year, $month, $day);
         }
 
-        parent::__construct( [ 'name'=>'fromto'], $tagProperties);
+        parent::__construct([ 'name' => 'fromto'], $tagProperties);
 
         $this->addTagClass('form-horizontal');
 
@@ -64,8 +66,10 @@ class OptionsForm extends Form {
         $container = new Container();
 
         $formColumns = new Row();
-        $modulesCol = $formColumns->addColumn(6,
-                new H2Tag(_('Modules')));
+        $modulesCol = $formColumns->addColumn(
+            6,
+            new H2Tag(_('Modules'))
+        );
 
         $candidates[_('Common modules')] = Digestor::getModules(constant('MODULE_PATH'));
 
@@ -75,13 +79,18 @@ class OptionsForm extends Form {
             foreach ($modules as $className => $classFile) {
                 include_once $classFile;
                 $module = new $className(null);
-                $modulesCol->addItem([new Toggle('modules[' . $className . ']',
-                            true, $classFile), '&nbsp;' . $module->heading() . '<br>']);
+                $modulesCol->addItem([new Toggle(
+                    'modules[' . $className . ']',
+                    true,
+                    $classFile
+                ), '&nbsp;' . $module->heading() . '<br>']);
             }
         }
 
-        $optionsCol = $formColumns->addColumn(6,
-                new H2Tag(_('Options')));
+        $optionsCol = $formColumns->addColumn(
+            6,
+            new H2Tag(_('Options'))
+        );
 
         $this->addJavaScript('
     
@@ -113,33 +122,60 @@ $( "#lastyear" ).click(function() {
 
 ');
 
-        $optionsCol->addItem(new LinkButton('#', _('Yesterday'), 'inverse',
-                        ['id' => 'yesterday']));
-        $optionsCol->addItem(new LinkButton('#', _('Week'), 'inverse',
-                        ['id' => 'lastweek']));
-        $optionsCol->addItem(new LinkButton('#', _('Month'), 'inverse',
-                        ['id' => 'lastmonth']));
-        $optionsCol->addItem(new LinkButton('#', _('Year'), 'inverse',
-                        ['id' => 'lastyear']));
+        $optionsCol->addItem(new LinkButton(
+            '#',
+            _('Yesterday'),
+            'inverse',
+            ['id' => 'yesterday']
+        ));
+        $optionsCol->addItem(new LinkButton(
+            '#',
+            _('Week'),
+            'inverse',
+            ['id' => 'lastweek']
+        ));
+        $optionsCol->addItem(new LinkButton(
+            '#',
+            _('Month'),
+            'inverse',
+            ['id' => 'lastmonth']
+        ));
+        $optionsCol->addItem(new LinkButton(
+            '#',
+            _('Year'),
+            'inverse',
+            ['id' => 'lastyear']
+        ));
 
-        $optionsCol->addItem(new FormGroup(_('From'),
-                        new InputDateTag('from', $from)));
+        $optionsCol->addItem(new FormGroup(
+            _('From'),
+            new InputDateTag('from', $from)
+        ));
 
-        $optionsCol->addItem(new FormGroup(_('To'),
-                        new InputDateTag('to', $to)));
+        $optionsCol->addItem(new FormGroup(
+            _('To'),
+            new InputDateTag('to', $to)
+        ));
 
-        $optionsCol->addItem(new FormGroup(_('Send by mail to'),
-                        new InputEmailTag('recipient',
-                                $customer->getNotificationEmailAddress())));
+        $optionsCol->addItem(new FormGroup(
+            _('Send by mail to'),
+            new InputEmailTag(
+                'recipient',
+                $customer->getNotificationEmailAddress()
+            )
+        ));
 
         $this->addItem(new InputHiddenTag('kod', $customer->getDataValue('kod')));
 
         $this->addItem($formColumns);
-        $this->addItem(new SubmitButton(sprintf(_('Generate digest for %s '),
-                                $customer->getDataValue('kod') . ': ' . $customer->getDataValue('nazev')),
-                        'success btn-lg btn-block',
-                        ['onClick' => "window.scrollTo(0, 0); $('#Preloader').css('visibility', 'visible');",
-                    'style' => 'height: 90%']));
+        $this->addItem(new SubmitButton(
+            sprintf(
+                _('Generate digest for %s '),
+                $customer->getDataValue('kod') . ': ' . $customer->getDataValue('nazev')
+            ),
+            'success btn-lg btn-block',
+            ['onClick' => "window.scrollTo(0, 0); $('#Preloader').css('visibility', 'visible');",
+            'style' => 'height: 90%']
+        ));
     }
-
 }
