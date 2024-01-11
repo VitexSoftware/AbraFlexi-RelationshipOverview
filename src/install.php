@@ -20,7 +20,6 @@ define('EASE_APPNAME', _('Relationship Overview'));
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $oPage = new WebPage(_('Button installer'));
-$oPage->logger = new \Ease\Logger\ToMemory();
 
 if (empty(\Ease\WebPage::getRequestValue('myurl'))) {
     $_REQUEST['myurl'] = dirname(\Ease\WebPage::phpSelf());
@@ -46,7 +45,7 @@ $loginForm->addItem(new \Ease\TWB4\SubmitButton(_('Install Button'), 'success bt
 
 $baseUrl = \Ease\WebPage::getRequestValue('myurl') . '/index.php?authSessionId=${authSessionId}&companyUrl=${companyUrl}';
 
-$buttonUrl = str_replace('http://', 'https://', $baseUrl) .= '&kod=${object.kod}&id=${object.id}';
+$buttonUrl = str_replace('http://', 'https://', $baseUrl . '&kod=${object.kod}&id=${object.id}') ;
 
 if ($oPage->isPosted()) {
     $browser = isset($_REQUEST) && array_key_exists('browser', $_REQUEST) ? 'automatic' : 'desktop';
@@ -56,7 +55,7 @@ if ($oPage->isPosted()) {
         array_merge($_REQUEST, ['evidence' => 'custom-button'])
     );
 
-    $buttoner->logBanner(constant('EASE_APPNAME'));
+    $buttoner->logBanner();
 
     $buttoner->insertToAbraFlexi(['id' => 'code:RELATIONSHIP', 'url' => $buttonUrl,
         'title' => _('Relationship Overview'), 'description' => _('Relationship Overview generator/sender'),
@@ -68,6 +67,8 @@ if ($oPage->isPosted()) {
             'success'
         );
 
+        $loginForm->addItem(Digestor::$logo);
+
         define('ABRAFLEXI_COMPANY', $buttoner->getCompany());
     }
 } else {
@@ -78,8 +79,10 @@ if ($oPage->isPosted()) {
 
 $setupRow = new Row();
 $setupRow->addColumn(6, $loginForm);
-$setupRow->addColumn(6, [Digestor::$logo, $oPage->getStatusMessagesBlock()]);
+
 
 $oPage->addItem(new Container($setupRow));
+
+$oPage->addItem(new \Ease\Html\FooterTag());
 
 echo $oPage;

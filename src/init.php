@@ -4,7 +4,7 @@
  * AbraFlexi Button installer page
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
- * @copyright (c) 2019-2021, Vitex Software
+ * @copyright (c) 2019-2024, Vitex Software
  */
 
 namespace AbraFlexi\Relationship;
@@ -13,7 +13,6 @@ use Ease\TWB4\WebPage;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-define('EASE_LOGGER', 'memory');
 define('MODULE_PATH', './modules');
 
 session_start();
@@ -21,7 +20,6 @@ session_start();
 new \Ease\Locale(null, '../i18n', 'abraflexi-relationship');
 
 $oPage = new WebPage();
-$oPage->logger = new \Ease\Logger\ToMemory();
 
 $authSessionId = $oPage->getRequestValue('authSessionId');
 $companyUrl = $oPage->getRequestValue('companyUrl');
@@ -50,7 +48,7 @@ if (array_key_exists('connection', $_SESSION)) {
         } else {
             $oPage->redirect('install.php');
         }
-        echo $oPage->draw();
-        exit();
     }
 }
+
+echo $oPage->draw();
