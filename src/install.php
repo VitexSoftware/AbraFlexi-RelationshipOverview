@@ -46,7 +46,7 @@ $loginForm->addItem(new \Ease\TWB4\SubmitButton(_('Install Button'), 'success bt
 
 $baseUrl = \Ease\WebPage::getRequestValue('myurl') . '/index.php?authSessionId=${authSessionId}&companyUrl=${companyUrl}';
 
-$buttonUrl = $baseUrl .= '&kod=${object.kod}&id=${object.id}';
+$buttonUrl = str_replace('http://', 'https://', $baseUrl) .= '&kod=${object.kod}&id=${object.id}';
 
 if ($oPage->isPosted()) {
     $browser = isset($_REQUEST) && array_key_exists('browser', $_REQUEST) ? 'automatic' : 'desktop';
