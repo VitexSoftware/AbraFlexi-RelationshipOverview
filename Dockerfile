@@ -25,5 +25,9 @@ COPY debian/conf/ssmtp.conf /etc/ssmtp/ssmtp.conf
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
+ENV EASE_LOGGER syslog|console
+
+RUN echo 1 > /tmp/1
+
 EXPOSE 80
 CMD ["/usr/sbin/apachectl","-DFOREGROUND"]
