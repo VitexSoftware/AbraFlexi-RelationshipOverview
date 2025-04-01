@@ -1,29 +1,35 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+declare(strict_types=1);
+
+/**
+ * This file is part of the MultiFlexi package
+ *
+ * https://github.com/VitexSoftware/AbraFlexi-RelationshipOverview
+ *
+ * (c) Vítězslav Dvořák <http://vitexsoftware.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 use AbraFlexi\FakturaPrijata;
 use AbraFlexi\Relationship\DigestModule;
 use AbraFlexi\Relationship\DigestModuleInterface;
 use AbraFlexi\RO;
-use Ease\TWB4\Table;
+use Ease\TWB5\Table;
 
 /**
- * Description of incomingInvoices
+ * Description of incomingInvoices.
  *
  * @author Vítězslav Dvořák <info@vitexsoftware.cz>
  */
 class IncomingInvoices extends DigestModule implements DigestModuleInterface
 {
     /**
-     * Column used to filter by date
-     * @var string
+     * Column used to filter by date.
      */
-    public $timeColumn = 'datVyst';
+    public string $timeColumn = 'datVyst';
 
     public function dig()
     {
@@ -56,54 +62,48 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface
                 _('Currency')]);
 
             foreach ($outInvoicesData as $outInvoiceData) {
-                $exposed++;
-                if ($outInvoiceData['storno'] == 'true') {
-                    $storno++;
+                ++$exposed;
+
+                if ($outInvoiceData['storno'] === 'true') {
+                    ++$storno;
                 }
+
                 $currency = self::getCurrency($outInvoiceData);
                 $typDokl = \AbraFlexi\RO::uncode($outInvoiceData['typDokl']);
 
-                if ($currency != 'CZK') {
-                    $amount = floatval($outInvoiceData['sumCelkemMen']);
-                    $proformed = floatval($outInvoiceData['sumZalohyMen']);
-                    $settled = floatval($outInvoiceData['juhSumMen']);
+                if ($currency !== 'CZK') {
+                    $amount = (float) $outInvoiceData['sumCelkemMen'];
+                    $proformed = (float) $outInvoiceData['sumZalohyMen'];
+                    $settled = (float) $outInvoiceData['juhSumMen'];
                 } else {
-                    $amount = floatval($outInvoiceData['sumCelkem']);
-                    $proformed = floatval($outInvoiceData['sumZalohy']);
-                    $settled = floatval($outInvoiceData['juhSum']);
+                    $amount = (float) $outInvoiceData['sumCelkem'];
+                    $proformed = (float) $outInvoiceData['sumZalohy'];
+                    $settled = (float) $outInvoiceData['juhSum'];
                 }
 
-
-
-                if (!array_key_exists($typDokl, $typDoklTotals)) {
+                if (!\array_key_exists($typDokl, $typDoklTotals)) {
                     $typDoklTotals[$typDokl] = [];
                 }
 
-                if (!array_key_exists($currency, $typDoklTotals[$typDokl])) {
+                if (!\array_key_exists($currency, $typDoklTotals[$typDokl])) {
                     $typDoklTotals[$typDokl][$currency] = 0;
                 }
 
-                if (array_key_exists($typDokl, $typDoklCounts)) {
-                    $typDoklCounts[$typDokl]++;
+                if (\array_key_exists($typDokl, $typDoklCounts)) {
+                    ++$typDoklCounts[$typDokl];
                     $typDoklTotals[$typDokl][$currency] += $amount;
                 } else {
                     $typDoklCounts[$typDokl] = 1;
                     $typDoklTotals[$typDokl][$currency] = $amount;
                 }
 
-                if (array_key_exists($currency, $invoicedRaw)) {
+                if (\array_key_exists($currency, $invoicedRaw)) {
                     $invoicedRaw[$currency] += $amount;
                 } else {
                     $invoicedRaw[$currency] = $amount;
                 }
 
-                unset($outInvoiceData['id']);
-                unset($outInvoiceData['mena']);
-                unset($outInvoiceData['storno']);
-                unset($outInvoiceData['typDokl@ref']);
-                unset($outInvoiceData['typDokl']);
-                unset($outInvoiceData['mena@ref']);
-                unset($outInvoiceData['mena@showAs']);
+                unset($outInvoiceData['id'], $outInvoiceData['mena'], $outInvoiceData['storno'], $outInvoiceData['typDokl@ref'], $outInvoiceData['typDokl'], $outInvoiceData['mena@ref'], $outInvoiceData['mena@showAs']);
 
                 $outInvoiceData['sumCelkem'] = $amount;
                 unset($outInvoiceData['sumCelkemMen']);
@@ -112,20 +112,20 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface
                 $outInvoiceData['juhSum'] = $settled;
                 unset($outInvoiceData['juhSumMen']);
                 $outInvoiceData['mena'] = $currency;
-                $outInvoiceData['datVyst'] =   $outInvoiceData['datVyst']->format('c');
+                $outInvoiceData['datVyst'] = $outInvoiceData['datVyst']->format('c');
                 unset($outInvoiceData['external-ids']);
                 $listingTable->addRowColumns($outInvoiceData);
             }
-
 
             $this->addItem($listingTable);
 
             $this->addItem($this->totalsTable(
                 $typDoklTotals,
                 $invoicedRaw,
-                $typDoklCounts
+                $typDoklCounts,
             ));
         }
+
         return !empty($outInvoicesData);
     }
 
@@ -134,8 +134,9 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface
         $tableHeader[] = _('Count');
         $tableHeader[] = _('Document type');
         $currencies = array_keys($invoicedRaw);
+
         foreach ($currencies as $currencyCode) {
-            $tableHeader[] = _('Total') . ' ' . RO::uncode($currencyCode);
+            $tableHeader[] = _('Total').' '.RO::uncode($currencyCode);
         }
 
         $outInvoicesTable = new Table();
@@ -147,13 +148,15 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface
             $tableRow[] = RO::uncode($typDokl);
 
             foreach ($currencies as $currencyCode) {
-                $tableRow[] = array_key_exists(
+                $tableRow[] = \array_key_exists(
                     $currencyCode,
-                    $typDoklTotals[$typDokl]
+                    $typDoklTotals[$typDokl],
                 ) ? $typDoklTotals[$typDokl][$currencyCode] : '';
             }
+
             $outInvoicesTable->addRowColumns($tableRow);
         }
+
         return $outInvoicesTable;
     }
 
@@ -163,7 +166,7 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface
     }
 
     /**
-     * Default Description
+     * Default Description.
      *
      * @return string
      */
@@ -172,5 +175,5 @@ class IncomingInvoices extends DigestModule implements DigestModuleInterface
         return _('Invoices we recieved');
     }
 
-    //put your code here
+    // put your code here
 }

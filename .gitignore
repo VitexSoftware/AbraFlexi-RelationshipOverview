@@ -6,3 +6,4 @@
 /debian/.debhelper/
 /debian/abraflexi-relationship/
 /debian/
+/.build/

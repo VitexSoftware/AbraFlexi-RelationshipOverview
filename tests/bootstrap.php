@@ -13,16 +13,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace AbraFlexi\Relationship;
+require_once __DIR__.'/../vendor/autoload.php';
 
-/**
- * @author vitex
- */
-interface DigestModuleInterface
-{
-    public function heading();
-
-    public function description();
-
-    public function dig();
-}
+\Ease\Shared::instanced()->loadConfig(__DIR__.'/.env', true);

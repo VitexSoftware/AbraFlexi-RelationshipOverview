@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * AbraFlexi Digest
+ * This file is part of the MultiFlexi package
  *
- * @author     Vítězslav Dvořák <info@vitexsofware.cz>
- * @copyright  (G) 2018 Vitex Software
+ * https://github.com/VitexSoftware/AbraFlexi-RelationshipOverview
+ *
+ * (c) Vítězslav Dvořák <http://vitexsoftware.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace AbraFlexi\Relationship;
 
 /**
- * Description of DigestMod
+ * Description of DigestMod.
  *
  * @author vitex
  */
@@ -18,80 +24,84 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
 {
     /**
      * Which records we want to see ?
+     *
      * @param array $condition
      */
     public $condition = [];
 
     /**
-     * Flexibe Evidence Column(s) used to filter by date
-     * @var string|array
+     * AbraFlexi Evidence Column(s) used to filter by date.
      */
-    public $timeColumn = null;
+    public string $timeColumn = '';
 
     /**
-     * Initial date to process
-     * @var  \DateInterval
+     * Initial date to process.
      */
-    public $timeInterval = null;
+    public ?\DatePeriod $timeInterval = null; // Updated to use DatePeriod
 
     /**
-     * Prepare condition, add header with anchors
+     * Prepare condition, add header with anchors.
      *
-     * @param \DateInterval    $interval
-     * @param array $conditons Default conditions
+     * @param \DatePeriod $interval
+     * @param array       $conditons Default conditions
      */
     public function __construct($interval, $conditons = [])
     {
         if (!empty($interval) && $this->timeColumn) {
-            if (is_array($this->timeColumn)) {
+            if (\is_array($this->timeColumn)) {
                 $condParts = [];
+
                 foreach ($this->timeColumn as $timeColumn) {
                     $condParts[$timeColumn] = $interval;
                 }
-                $this->condition = array_merge($conditons, [\AbraFlexi\RO::flexiUrl(
+
+                $this->condition = array_merge($conditons, [\AbraFlexi\Functions::flexiUrl(
                     $condParts,
-                    ' or '
+                    ' or ',
                 )]);
             } else {
                 $this->condition = array_merge($conditons, [$this->timeColumn => $interval]);
             }
         }
-        $this->timeInterval = $interval;
+
+        $this->timeInterval = $interval; // Assign DatePeriod
         parent::__construct();
-        $this->setTagID(get_class($this));
+        $this->setTagID(\get_class($this));
     }
 
     /**
-     * Proccess data digging
+     * Proccess data digging.
      *
-     * @return boolean
+     * @return bool
      */
     public function process()
     {
         $this->addItem(new \Ease\Html\H2Tag(new \Ease\Html\ATag(
             '#index',
             $this->heading(),
-            ['name' => get_class($this)]
+            ['name' => \get_class($this)],
         )));
         $this->addStatusMessage($this->heading());
         $this->addItem(new \Ease\Html\SmallTag($this->description()));
+
         return $this->dig();
     }
 
     /**
-     * Obtaining informations
+     * Obtaining informations.
      */
     public function dig()
     {
         $this->addItem(new \Ease\Html\ATag(
             'https://www.vitexsoftware.cz/cenik.php',
-            _('Please contact Vitex Software to make this module working.')
+            _('Please contact Vitex Software to make this module working.'),
         ));
+
         return true;
     }
 
     /**
-     * Default Heading
+     * Default Heading.
      *
      * @return string
      */
@@ -101,7 +111,7 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
     }
 
     /**
-     * Default Description
+     * Default Description.
      *
      * @return string
      */
@@ -111,7 +121,7 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
     }
 
     /**
-     * Get Currency name
+     * Get Currency name.
      *
      * @param array $data
      *
@@ -119,14 +129,14 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
      */
     public static function getCurrency($data)
     {
-        return array_key_exists('mena', $data) ? current(explode(
+        return \array_key_exists('mena', $data) ? current(explode(
             ':',
-            $data['mena']->showAs
-        )) : strval($data['mena']);
+            $data['mena']->showAs,
+        )) : (string) ($data['mena']);
     }
 
     /**
-     * Format Czech Currency
+     * Format Czech Currency.
      *
      * @param float $price
      *
@@ -138,35 +148,29 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
     }
 
     /**
-     *
-     * @param array $record
-     *
      * @return float
      */
     public static function getPrice(array $record)
     {
-        return self::formatCurrency(self::getAmount($record)) . ' ' . self::getCurrency($record);
+        return self::formatCurrency(self::getAmount($record)).' '.self::getCurrency($record);
     }
 
     /**
-     *
-     *
-     * @param array $record
-     *
      * @return string
      */
     public static function getAmount(array $record)
     {
-        if (self::getCurrency($record) == 'CZK') {
-            $amount = floatval($record['sumCelkem']);
+        if (self::getCurrency($record) === 'CZK') {
+            $amount = (float) $record['sumCelkem'];
         } else {
-            $amount = floatval($record['sumCelkemMen']);
+            $amount = (float) $record['sumCelkemMen'];
         }
+
         return $amount;
     }
 
     /**
-     * AbraFlexi date in human readable form
+     * AbraFlexi date in human readable form.
      *
      * @param string $flexiDate
      *
@@ -178,67 +182,48 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
     }
 
     /**
-     * Is Date between dates
+     * Is Date between dates.
      *
-     * @param DateTime $date Date that is to be checked if it falls between $startDate and $endDate
+     * @param DateTime $date      Date that is to be checked if it falls between $startDate and $endDate
      * @param DateTime $startDate Date should be after this date to return true
-     * @param DateTime $endDate Date should be before this date to return true
+     * @param DateTime $endDate   Date should be before this date to return true
      *
      * return bool
      */
     public static function isDateBetweenDates(
         \DateTime $date,
         \DateTime $startDate,
-        \DateTime $endDate
+        \DateTime $endDate,
     ) {
         return $date > $startDate && $date < $endDate;
     }
 
     /**
-     * Is datw within date interval
+     * Is date within date interval.
      *
-     * @param \AbraFlexi\Digest\DateTime $date
-     * @param \DateInterval               $interval
-     *
-     * @return boolean
+     * @return bool
      */
-    public static function isDateWithinInterval(
-        \DateTime $date,
-        \DatePeriod $interval
-    ) {
-        return self::isDateBetweenDates(
-            $date,
-            $interval->getStartDate(),
-            $interval->getEndDate()
-        );
+    public static function isDateWithinInterval(\DateTime $date, \DatePeriod $interval)
+    {
+        return $date >= $interval->getStartDate() && $date <= $interval->getEndDate();
     }
 
     /**
-     * Is date subject of digest ?
+     * Is date subject of digest?
      *
-     * @param \AbraFlexi\Digest\DateTime $date
-     *
-     * @return boolean
+     * @return bool
      */
     public function isMyDate(\DateTime $date)
     {
-        switch (get_class($this->timeInterval)) {
-            case 'DatePeriod':
-                $result = self::isDateWithinInterval($date, $this->timeInterval);
-                break;
-            case 'DateTime':
-                $result = !date_diff($this->timeInterval, $date);
-                break;
-
-            default:
-                $result = true;
-                break;
+        if ($this->timeInterval instanceof \DatePeriod) {
+            return self::isDateWithinInterval($date, $this->timeInterval);
         }
-        return $result;
+
+        return false;
     }
 
     /**
-     * Return Totals for serveral currencies
+     * Return Totals for serveral currencies.
      *
      * @param array $totals [currency=>amount,currency2=>amount2]
      *
@@ -247,57 +232,60 @@ class DigestModule extends \Ease\Html\DivTag implements DigestModuleInterface
     public static function getTotalsDiv(array $totals)
     {
         $total = new \Ease\Html\DivTag();
+
         foreach ($totals as $currency => $amount) {
-            $total->addItem(new \Ease\Html\DivTag(self::formatCurrency($amount) . '&nbsp;' . \AbraFlexi\RO::uncode($currency)));
+            $total->addItem(new \Ease\Html\DivTag(self::formatCurrency($amount).'&nbsp;'.\AbraFlexi\RO::uncode($currency)));
         }
+
         return $total;
     }
 
     /**
-     * Save HTML digest fragment
+     * Save HTML digest fragment.
      *
      * @param string $saveTo directory
      */
-    public function saveToHtml($saveTo)
+    public function saveToHtml($saveTo): void
     {
-        $filename = $saveTo . $this->getReportFilename();
+        $filename = $saveTo.$this->getReportFilename();
         $this->addStatusMessage(
             sprintf(
                 _('Module output Saved to %s'),
-                $filename
+                $filename,
             ),
-            file_put_contents($filename, $this->getRendered()) ? 'success' : 'error'
+            file_put_contents($filename, $this->getRendered()) ? 'success' : 'error',
         );
     }
 
     /**
-     * Remove reportfile
+     * Remove reportfile.
      *
      * @param string $saveTo
      */
-    public function fileCleanUP($saveTo)
+    public function fileCleanUP($saveTo): void
     {
-        $filename = $saveTo . $this->getReportFilename();
+        $filename = $saveTo.$this->getReportFilename();
+
         if (file_exists($filename)) {
             $this->addStatusMessage(sprintf(
                 _('Module output %s wiped out'),
-                $filename
+                $filename,
             ), unlink($filename) ? 'success' : 'error');
         }
     }
 
     public function getReportFilename()
     {
-        return pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_FILENAME) . '_' . pathinfo(
-            get_class($this),
-            PATHINFO_FILENAME
-        ) . '.html';
+        return pathinfo($_SERVER['SCRIPT_FILENAME'], \PATHINFO_FILENAME).'_'.pathinfo(
+            \get_class($this),
+            \PATHINFO_FILENAME,
+        ).'.html';
     }
 
     /**
-     * Print progress log
+     * Print progress log.
      */
-    public function finalize()
+    public function finalize(): void
     {
         $this->addStatusMessage($this->heading(), 'debug');
         parent::finalize();
