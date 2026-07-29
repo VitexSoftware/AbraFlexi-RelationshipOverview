@@ -1,3 +1,6 @@
+![Packaging: deb](https://img.shields.io/badge/packaging-.deb-red?logo=debian&logoColor=white)
+
+
 ![project logo](project-logo.png?raw=true)
 
 Přehled vztahu s klientem pro AbraFlexi
